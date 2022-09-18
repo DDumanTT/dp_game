@@ -1,0 +1,16 @@
+{
+  "name": "client",
+  "source": "src/index.html",
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build"
+  },
+  "devDependencies": {
+    "buffer": "^6.0.3",
+    "parcel": "^2.7.0",
+    "prettier": "2.7.1"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.5.2"
+  }
+}
