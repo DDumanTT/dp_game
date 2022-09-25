@@ -1,7 +1,6 @@
 .cache/
 coverage/
-dist/*
-!dist/index.html
+dist/
 node_modules/
 *.log
 
@@ -13,6 +12,3 @@ node_modules/
 .Trashes
 ehthumbs.db
 Thumbs.db
-
-.parcel-cache
-dist

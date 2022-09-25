@@ -7,9 +7,12 @@ const NODE_ENV = process.env.NODE_ENV || false;
 const app = express();
 const server = app.listen(PORT);
 
+import { SOCKET_UPDATE_POSITIONS, SOCKET_SPAWN_PLAYER } from "@shared/constants/SocketConstants";
+
 const io = new sockets.Server(server, { cors: { origin: "*" } });
 
 if (NODE_ENV == "production") {
+
   app.use(express.static("public"));
   app.get("/", (req, res) => res.sendFile("index.html"));
 }
@@ -29,12 +32,12 @@ io.on("connection", (socket) => {
     position: { x: getRandomInt(0, 1000), y: getRandomInt(0, 1000) },
   };
   players.push(player);
-  socket.emit("spawn-player", player);
+  socket.emit(SOCKET_SPAWN_PLAYER, player);
   // socket.broadcast.emit("new-player", player, players);
 });
 
 setInterval(() => {
-  io.emit("update-positions", players);
+  io.emit(SOCKET_UPDATE_POSITIONS, players);
 }, 500);
 
 function getRandomInt(min, max) {

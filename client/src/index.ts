@@ -3,35 +3,22 @@ import { io } from "socket.io-client";
 
 import * as PIXI from "pixi.js";
 import Player from "./components/Player";
+import LevelBuilder from "./services/LevelBuilder";
+import { Sprites } from "./GameManager";
 
-const LEVEL_WIDTH = 5000;
-const LEVEL_HEIGHT = 5000;
-
-import groundImage from "./assets/textures/ground.jpg";
+// import groundImage from "./assets/textures/ground.jpg";
 
 const socket = io("http://localhost:3000/");
-const sprites = {};
 
-let app = new PIXI.Application({ resizeTo: window, backgroundColor: 0xffffff });
-document.body.appendChild(app.view);
+// let app = new PIXI.Application({ resizeTo: window, backgroundColor: 0xffffff });
+// document.body.appendChild(app.view);
 
-app.loader.add("ground", groundImage);
-app.loader.load(init);
+// app.loader.add("ground", groundImage);
+// app.loader.load(init);
 
-function init(loader, resources) {
-  const level = new PIXI.Container();
-  // level.x = -LEVEL_HEIGHT / 2;
-  // level.y = -LEVEL_WIDTH / 2;
+export function temp_init(loader, resources: Sprites) {
+  const level = LevelBuilder.GenerateLevel(resources)
 
-  const sprite = new PIXI.TilingSprite(
-    resources.ground.texture,
-    LEVEL_HEIGHT,
-    LEVEL_WIDTH
-  );
-
-  console.log(sprite._textureID);
-
-  level.addChild(sprite);
   app.stage.addChild(level);
 
   app.view.addEventListener("mousemove", (e: MouseEvent) => {

@@ -1,6 +1,6 @@
 import { Graphics } from "pixi.js";
 
-class Player {
+export default class Player {
   private _id: string;
   public get id(): string {
     return this._id;
@@ -21,5 +21,3 @@ class Player {
     this._graphics.position.y = y;
   }
 }
-
-export default Player;
