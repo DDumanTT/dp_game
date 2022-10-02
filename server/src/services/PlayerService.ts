@@ -45,8 +45,9 @@ export default class PlayerService {
             return;
         }
         // for testing...
+        // console.log(currentPlayer.position);
+
         currentPlayer.position = player.position;
-        console.log(currentPlayer.position);
     }
 
 }
