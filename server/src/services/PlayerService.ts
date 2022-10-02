@@ -46,7 +46,7 @@ export default class PlayerService {
         }
         // for testing...
         // console.log(currentPlayer.position);
-
+        // dasd
         currentPlayer.position = player.position;
     }
 
