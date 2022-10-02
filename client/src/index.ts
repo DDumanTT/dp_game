@@ -1,85 +1,33 @@
 import "./styles.css";
-import { io } from "socket.io-client";
+import config from "./config";
 
-import * as PIXI from "pixi.js";
-import Player from "./components/Player";
-import LevelBuilder from "./services/LevelBuilder";
-import { Sprites } from "./GameManager";
+import { Application } from "pixi.js";
+import GameManagerBuilder from "./core/GameManagerBuilder";
+import SocketCommunicator from "./services/communicators/SocketCommunicator";
+import DefaultLevel from "./levels/DefaultLevel";
 
-// import groundImage from "./assets/textures/ground.jpg";
+import "./extensions/NumberExtensions";
 
-const socket = io("http://localhost:3000/");
-
-// let app = new PIXI.Application({ resizeTo: window, backgroundColor: 0xffffff });
-// document.body.appendChild(app.view);
-
-// app.loader.add("ground", groundImage);
-// app.loader.load(init);
-
-export function temp_init(loader, resources: Sprites) {
-  const level = LevelBuilder.GenerateLevel(resources)
-
-  app.stage.addChild(level);
-
-  app.view.addEventListener("mousemove", (e: MouseEvent) => {
-    // console.log(`x: ${e.clientX}, y: ${e.clientY}`);
+window.onload = () => {
+  const app = new Application({
+    resizeTo: window,
+    backgroundColor: 0xffffff,
   });
 
-  // let canvas_players = [] as Player[];
-  let player_id: string = "";
-  socket.on("connect", () => {
-    console.log(`Connected with id: ${socket.id}`);
-    player_id = socket.id;
-  });
+  app.ticker.maxFPS = config.performance.fps;
+  document.body.appendChild(app.view);
 
-  let socket_players: SocketPlayer[] = [];
+  const gameManagerBuilder = new GameManagerBuilder(app);
+  gameManagerBuilder.addAutoService(new SocketCommunicator(config.communicators.sockets));
 
-  socket.on("update-positions", (players: SocketPlayer[]) => {
-    socket_players = players;
-  });
+  const gameManager = gameManagerBuilder.build();
 
-  let pixi_players: Player[] = [];
+  // TODO: implement level picker service
+  const defaultLevel = new DefaultLevel(gameManager);
+  // const gameManager = new GameManager(gameManagerBuilder);
+  // gameManager.loadAssets(app.loader);
 
-  let elapsed = 0.0;
-  let seconds = 0;
-  app.ticker.add((delta) => {
-    elapsed += delta;
-    seconds += (1 / 60) * delta;
+  // app.loader.load(gameManager.loadSprites.bind(gameManager));
+  // app.loader.onComplete.add(gameManager.gameStart.bind(gameManager));
+};
 
-    if (seconds >= 0.5) {
-      seconds = 0;
-
-      const connectedPlayers: Player[] = [];
-
-      // TODO: improve speed
-      for (const pixi_player of pixi_players) {
-        const isPlayerDisconnected =
-          socket_players.filter((x) => x.id == pixi_player.id).length == 0;
-
-        if (isPlayerDisconnected) {
-          pixi_player.graphics.clear();
-          // pixi_player.graphics.destroy();
-        }
-      }
-
-      for (const socket_player of socket_players) {
-        const isPlayerDrawn =
-          pixi_players.filter((x) => x.id == socket_player.id).length > 0;
-
-        if (!isPlayerDrawn) {
-          const graphics = drawPlayer(level, socket_player);
-          const player = new Player(socket_player.id, graphics);
-          pixi_players.push(player);
-        }
-      }
-    }
-  });
-
-  function drawPlayer(container: PIXI.Container, player: SocketPlayer) {
-    const obj = new PIXI.Graphics();
-    obj.beginFill(0xff0000);
-    obj.drawCircle(player.position.x, player.position.y, 50);
-    container.addChild(obj);
-    return obj;
-  }
-}
