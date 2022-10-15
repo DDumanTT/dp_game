@@ -17,6 +17,9 @@ import SocketPlayer from "@shared/contracts/SocketPlayer";
 import Position from "../components/Position";
 import SocketPosition from "@shared/contracts/SocketPosition";
 
+import { Factory } from "../core/Factories/Factory";
+import { EntityType } from "../core/interfaces/IEntityFactory";
+
 export default class DefaultLevel extends GameLoopBase {
   private readonly _spriteCache: Record<string, Sprite> = {};
   // TODO: into observable or event
@@ -48,6 +51,9 @@ export default class DefaultLevel extends GameLoopBase {
     this.app.view.addEventListener("mousemove", (e: MouseEvent) => {
       const relativeX = e.clientX - this.app.view.width / 2;
       const relativeY = e.clientY - this.app.view.height / 2;
+      // console.log(`${relativeX};${relativeY}`);
+      // const r = Math.sqrt(relativeX ** 2 + relativeY ** 2);
+      // console.log(r);
 
       const x = relativeX.clamp(-100, 100) / 100;
       const y = relativeY.clamp(-100, 100) / 100;
@@ -74,15 +80,22 @@ export default class DefaultLevel extends GameLoopBase {
     this._seconds += (1 / 60) * delta;
 
     this._seconds = 0;
-    this._level.position.x -= 5 * this._mousePosition.x;
-    this._level.position.y -= 5 * this._mousePosition.y;
 
-    this._currentPixiPlayer?.move(5 * this._mousePosition.x, 5 * this._mousePosition.y);
+    if (this._currentPixiPlayer) {
+      const [x, y] = this._currentPixiPlayer.move(
+        5 * this._mousePosition.x,
+        5 * this._mousePosition.y
+      );
+
+      this._level.position.x = -x + this.app.screen.width / 2;
+      this._level.position.y = -y + this.app.screen.height / 2;
+    }
 
     // TODO: improve speed and extract to service
     for (const pixi_player of this._pixiPlayers) {
       const isPlayerDisconnected =
-        socket?.players?.filter((x) => x.id == pixi_player.id).length == 0 ?? true;
+        socket?.players?.filter((x) => x.id == pixi_player.id).length == 0 ??
+        true;
 
       if (isPlayerDisconnected) {
         pixi_player.graphics.clear();
@@ -96,10 +109,21 @@ export default class DefaultLevel extends GameLoopBase {
 
       if (!isPlayerDrawn) {
         let graphics: Graphics = this.drawPlayer(this._level, socketPlayer);
-        const player = new Player(socketPlayer.id, new Position(socketPlayer.position.x, socketPlayer.position.y), graphics);
+        const factory = new Factory();
+        const player = factory.createGameEntity(
+          socketPlayer,
+          graphics,
+          EntityType.Player
+        );
 
-        if (this._currentPixiPlayer == undefined && socketPlayer.id == socket.currentPlayerId) {
-          this._level.position.set(this.app.view.width / 2 - socketPlayer.position.x, this.app.view.height / 2 - socketPlayer.position.y);
+        if (
+          this._currentPixiPlayer == undefined &&
+          socketPlayer.id == socket.currentPlayerId
+        ) {
+          this._level.position.set(
+            this.app.view.width / 2 - socketPlayer.position.x,
+            this.app.view.height / 2 - socketPlayer.position.y
+          );
           this._currentPixiPlayer = player;
         } else {
           this._pixiPlayers.push(player);
@@ -107,11 +131,17 @@ export default class DefaultLevel extends GameLoopBase {
       } else {
         if (socketPlayer.id != socket.currentPlayerId) {
           // console.log(`User: ${socketPlayer.id}, x: ${socketPlayer.position.x}, y: ${socketPlayer.position.y}`);
-          const pixiPlayer = this._pixiPlayers.find((x) => x.id == socketPlayer.id);
+          const pixiPlayer = this._pixiPlayers.find(
+            (x) => x.id == socketPlayer.id
+          );
           if (pixiPlayer) {
             pixiPlayer.graphics.clear();
             pixiPlayer.graphics.beginFill(0xff0000);
-            pixiPlayer.graphics.drawCircle(socketPlayer.position.x, socketPlayer.position.y, 50);
+            pixiPlayer.graphics.drawCircle(
+              socketPlayer.position.x,
+              socketPlayer.position.y,
+              50
+            );
           }
         }
       }
@@ -124,12 +154,16 @@ export default class DefaultLevel extends GameLoopBase {
       // console.log(`x: ${levelBounds.x - currentPlayerBounds.x}, y: ${levelBounds.y - currentPlayerBounds.y}`);
       socketPlayer.id = this._currentPixiPlayer.id;
       socketPlayer.position = new SocketPosition();
-      socketPlayer.position.x = this._currentPixiPlayer?.graphics.position.x + this._currentPixiPlayer.spawnPosition.x;
-      socketPlayer.position.y = this._currentPixiPlayer?.graphics.position.y + this._currentPixiPlayer.spawnPosition.y;
+      socketPlayer.position.x =
+        this._currentPixiPlayer?.graphics.position.x +
+        this._currentPixiPlayer.spawnPosition.x;
+      socketPlayer.position.y =
+        this._currentPixiPlayer?.graphics.position.y +
+        this._currentPixiPlayer.spawnPosition.y;
 
       // console.log("x, y", socketPlayer.position.x, socketPlayer.position.y);
 
-      socket.sendPlayerPosition(socketPlayer)
+      socket.sendPlayerPosition(socketPlayer);
     }
   }
 
@@ -137,8 +171,9 @@ export default class DefaultLevel extends GameLoopBase {
   public drawPlayer(container: Container, player: SocketPlayer) {
     const obj = new Graphics();
     obj.beginFill(0xff0000);
-    obj.drawCircle(player.position.x, player.position.y, 50);
+    obj.drawCircle(0, 0, 50);
     container.addChild(obj);
+    obj.position.set(player.position.x, player.position.y);
     return obj;
   }
 }

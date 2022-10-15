@@ -18,7 +18,9 @@ window.onload = () => {
   document.body.appendChild(app.view);
 
   const gameManagerBuilder = new GameManagerBuilder(app);
-  gameManagerBuilder.addAutoService(new SocketCommunicator(config.communicators.sockets));
+  gameManagerBuilder.addAutoService(
+    new SocketCommunicator(config.communicators.sockets)
+  );
 
   const gameManager = gameManagerBuilder.build();
 
@@ -30,4 +32,3 @@ window.onload = () => {
   // app.loader.load(gameManager.loadSprites.bind(gameManager));
   // app.loader.onComplete.add(gameManager.gameStart.bind(gameManager));
 };
-
