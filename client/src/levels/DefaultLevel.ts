@@ -20,6 +20,11 @@ import SocketPosition from "@shared/contracts/SocketPosition";
 import { Factory } from "../core/Factories/Factory";
 import { EntityType } from "../core/interfaces/IEntityFactory";
 
+import RegularMovementStrategy from "../core/strategies/RegularMovementStrategy";
+import InvertedMovementStrategy from "../core/strategies/InvertedMovementStrategy";
+
+import config from "../config";
+
 export default class DefaultLevel extends GameLoopBase {
   private readonly _spriteCache: Record<string, Sprite> = {};
   // TODO: into observable or event
@@ -37,8 +42,8 @@ export default class DefaultLevel extends GameLoopBase {
   public override loadSprites(loader: Loader, resources: Dict<LoaderResource>) {
     this._spriteCache[groundImage] = new TilingSprite(
       resources[groundImage].texture!,
-      5000,
-      5000
+      config.world.width,
+      config.world.height
     );
   }
 
@@ -46,26 +51,49 @@ export default class DefaultLevel extends GameLoopBase {
     this._level.addChild(this._spriteCache[groundImage]);
     this.app.stage.addChild(this._level);
 
-    // TODO: on resize player should be in the middle xD, also fix scroll hack
-
-    this.app.view.addEventListener("mousemove", (e: MouseEvent) => {
-      const relativeX = e.clientX - this.app.view.width / 2;
-      const relativeY = e.clientY - this.app.view.height / 2;
-      // console.log(`${relativeX};${relativeY}`);
-      // const r = Math.sqrt(relativeX ** 2 + relativeY ** 2);
-      // console.log(r);
-
-      const x = relativeX.clamp(-100, 100) / 100;
-      const y = relativeY.clamp(-100, 100) / 100;
-
-      this._mousePosition.set(x, y);
-      // console.log(`x: ${x}, y: ${x}`);
+    let flag = true;
+    window.addEventListener("keydown", (e: KeyboardEvent) => {
+      if (e.code === "KeyS") {
+        if (flag) {
+          this._currentPixiPlayer?.setMovementStrategy(
+            new RegularMovementStrategy()
+          );
+        } else {
+          this._currentPixiPlayer?.setMovementStrategy(
+            new InvertedMovementStrategy()
+          );
+        }
+        flag = !flag;
+      }
     });
   }
 
   private _seconds: number = 0;
   public update(delta: number): void {
     const socket = this.gameManager.getService(SocketCommunicator);
+
+    if (this._currentPixiPlayer) {
+      const playerPosOnScreen =
+        this._currentPixiPlayer.graphics.getGlobalPosition();
+      const { x: mouseX, y: mouseY } =
+        this.app.renderer.plugins.interaction.mouse.global;
+
+      let distance = Math.sqrt(
+        (mouseX - playerPosOnScreen.x) ** 2 +
+          (mouseY - playerPosOnScreen.y) ** 2
+      );
+      let angle = Math.atan2(
+        mouseY - playerPosOnScreen.y,
+        mouseX - playerPosOnScreen.x
+      );
+
+      distance = distance.clamp(-250, 250) / 50;
+
+      let x = distance * Math.cos(angle);
+      let y = distance * Math.sin(angle);
+
+      this._mousePosition.set(x, y);
+    }
 
     if (socket.currentPlayerId == undefined) {
       return;
@@ -83,12 +111,46 @@ export default class DefaultLevel extends GameLoopBase {
 
     if (this._currentPixiPlayer) {
       const [x, y] = this._currentPixiPlayer.move(
-        5 * this._mousePosition.x,
-        5 * this._mousePosition.y
+        this._mousePosition.x,
+        this._mousePosition.y
       );
 
+      // Player world bound collision
+      if (this._currentPixiPlayer.graphics.x < 50) {
+        this._currentPixiPlayer.graphics.x = 50;
+      } else if (this._currentPixiPlayer.graphics.x > config.world.width - 50) {
+        this._currentPixiPlayer.graphics.x = config.world.width - 50;
+      }
+
+      if (this._currentPixiPlayer.graphics.y < 50) {
+        this._currentPixiPlayer.graphics.y = 50;
+      } else if (
+        this._currentPixiPlayer.graphics.y >
+        config.world.height - 50
+      ) {
+        this._currentPixiPlayer.graphics.y = config.world.height - 50;
+      }
+
+      // World bounds detection
       this._level.position.x = -x + this.app.screen.width / 2;
+      if (this._level.position.x > 0) {
+        this._level.position.x = 0;
+      } else if (
+        this._level.position.x < -(config.world.width - this.app.screen.width)
+      ) {
+        this._level.position.x = -(config.world.width - this.app.screen.width);
+      }
+
       this._level.position.y = -y + this.app.screen.height / 2;
+      if (this._level.position.y > 0) {
+        this._level.position.y = 0;
+      } else if (
+        this._level.position.y < -(config.world.height - this.app.screen.height)
+      ) {
+        this._level.position.y = -(
+          config.world.height - this.app.screen.height
+        );
+      }
     }
 
     // TODO: improve speed and extract to service
@@ -115,6 +177,7 @@ export default class DefaultLevel extends GameLoopBase {
           graphics,
           EntityType.Player
         );
+        this._pixiPlayers.push(player);
 
         if (
           this._currentPixiPlayer == undefined &&
@@ -125,8 +188,6 @@ export default class DefaultLevel extends GameLoopBase {
             this.app.view.height / 2 - socketPlayer.position.y
           );
           this._currentPixiPlayer = player;
-        } else {
-          this._pixiPlayers.push(player);
         }
       } else {
         if (socketPlayer.id != socket.currentPlayerId) {
@@ -137,10 +198,10 @@ export default class DefaultLevel extends GameLoopBase {
           if (pixiPlayer) {
             pixiPlayer.graphics.clear();
             pixiPlayer.graphics.beginFill(0xff0000);
-            pixiPlayer.graphics.drawCircle(
+            pixiPlayer.graphics.drawCircle(0, 0, 50);
+            pixiPlayer.graphics.position.set(
               socketPlayer.position.x,
-              socketPlayer.position.y,
-              50
+              socketPlayer.position.y
             );
           }
         }
@@ -154,12 +215,8 @@ export default class DefaultLevel extends GameLoopBase {
       // console.log(`x: ${levelBounds.x - currentPlayerBounds.x}, y: ${levelBounds.y - currentPlayerBounds.y}`);
       socketPlayer.id = this._currentPixiPlayer.id;
       socketPlayer.position = new SocketPosition();
-      socketPlayer.position.x =
-        this._currentPixiPlayer?.graphics.position.x +
-        this._currentPixiPlayer.spawnPosition.x;
-      socketPlayer.position.y =
-        this._currentPixiPlayer?.graphics.position.y +
-        this._currentPixiPlayer.spawnPosition.y;
+      socketPlayer.position.x = this._currentPixiPlayer?.graphics.position.x;
+      socketPlayer.position.y = this._currentPixiPlayer?.graphics.position.y;
 
       // console.log("x, y", socketPlayer.position.x, socketPlayer.position.y);
 

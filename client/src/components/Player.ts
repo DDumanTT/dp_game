@@ -28,7 +28,7 @@ export default class Player {
     this._id = id;
     this._spawnPosition = spawnPosition;
     this._graphics = graphics;
-    this._movementStrategy = new InvertedMovementStrategy();
+    this._movementStrategy = new RegularMovementStrategy();
   }
 
   public move(x: number, y: number): [number, number] {
