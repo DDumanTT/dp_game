@@ -1,9 +1,19 @@
 export enum EntityType {
-  Mass = 1,
+  Enemy,
   Player,
 }
 
-export interface IEntityFactory {
+export interface PickupArtifact {
   name: string;
-  move(): void;
+  ability(): void;
+}
+
+export enum CirclePickupType {
+  Grow,
+  Speed,
+}
+
+export enum SquarePickupType {
+  Grow,
+  Speed,
 }

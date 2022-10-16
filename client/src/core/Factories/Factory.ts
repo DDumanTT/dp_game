@@ -17,8 +17,8 @@ export class Factory {
           new Position(socketPlayer.position.x, socketPlayer.position.y),
           graphics
         );
-      case EntityType.Mass:
-      // return new Mass();
+      case EntityType.Enemy:
+      // return new Pickup();
       default:
         throw new Error("Unknown Entity type");
     }

@@ -23,7 +23,7 @@ import { EntityType } from "../core/interfaces/IEntityFactory";
 import RegularMovementStrategy from "../core/strategies/RegularMovementStrategy";
 import InvertedMovementStrategy from "../core/strategies/InvertedMovementStrategy";
 
-import config from "../config";
+import config from "@shared/config";
 
 export default class DefaultLevel extends GameLoopBase {
   private readonly _spriteCache: Record<string, Sprite> = {};
@@ -87,7 +87,7 @@ export default class DefaultLevel extends GameLoopBase {
         mouseX - playerPosOnScreen.x
       );
 
-      distance = distance.clamp(-250, 250) / 50;
+      distance = (distance.clamp(-250, 250) * delta) / 50;
 
       let x = distance * Math.cos(angle);
       let y = distance * Math.sin(angle);
