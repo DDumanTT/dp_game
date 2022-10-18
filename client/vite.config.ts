@@ -6,11 +6,11 @@ export default defineConfig({
     port: 3001,
     watch: {
       usePolling: true,
-    }
+    },
   },
   resolve: {
     alias: {
-      '@shared': path.resolve(__dirname, '../shared')
-    }
-  }
+      "@shared": path.resolve(__dirname, "../shared"),
+    },
+  },
 });
