@@ -1,5 +1,5 @@
-import { Application } from "pixi.js";
+import IGameManager from "./IGameManager";
 
 export default interface AutoService {
-    execute(app: Application): void;
+  execute(gameManager: IGameManager): void;
 }

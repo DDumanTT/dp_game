@@ -1,7 +1,10 @@
-import { Loader, LoaderResource } from "pixi.js";
-import type { Dict } from "@pixi/utils";
+import { Dict } from "@pixi/utils";
+import { Application, Container, Loader, LoaderResource } from "pixi.js";
 
 export default interface ILevel {
-  loadAssets(loader: Loader): void;
+  container: Container;
+  load(setupUpdate: () => void, app: Application): void;
+  addToContainer(): void;
+  loadAssets(): void;
   loadSprites(loader: Loader, resources: Dict<LoaderResource>): void;
 }

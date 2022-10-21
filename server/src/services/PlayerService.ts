@@ -22,8 +22,9 @@ export default class PlayerService {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  public spawnPlayer(socketId: string) {
+  public spawnPlayer(socketId: string, name: string) {
     let player: SocketPlayer = {
+      name,
       id: socketId,
       position: {
         x: this.generatePosition(0, config.world.width),
@@ -33,6 +34,7 @@ export default class PlayerService {
     console.log(player.position.x);
     console.log(player.position.y);
     this.addPlayer(player);
+    return player;
   }
 
   private addPlayer(player: SocketPlayer): void {
@@ -50,7 +52,18 @@ export default class PlayerService {
     }
     // for testing...
     // console.log(currentPlayer.position);
-    // dasd
     currentPlayer.position = player.position;
+  }
+
+  public getPlayerPositions() {
+    const players: Record<string, SocketPlayer> = {};
+    this._players.forEach((p) => {
+      players[p.id] = p;
+    });
+    return players;
+  }
+
+  public getPlayers() {
+    return this._players;
   }
 }

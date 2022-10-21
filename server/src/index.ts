@@ -7,9 +7,15 @@ const NODE_ENV = process.env.NODE_ENV || false;
 const app = express();
 const server = app.listen(PORT);
 
-import { SOCKET_UPDATE_POSITIONS, SOCKET_SPAWN_PLAYER, SOCKET_UPDATE_USER_POS } from "@shared/constants/SocketConstants";
+import config from "@shared/config";
+import {
+  SOCKET_UPDATE_POSITIONS,
+  SOCKET_SPAWN_PLAYER,
+  SOCKET_UPDATE_USER_POS,
+  SOCKET_GET_CURRENT_PLAYERS,
+} from "@shared/constants/SocketConstants";
 import SocketPlayer from "@shared/contracts/SocketPlayer";
-import PlayerService from './services/PlayerService';
+import PlayerService from "./services/PlayerService";
 
 const io = new sockets.Server(server, { cors: { origin: "*" } });
 
@@ -22,26 +28,31 @@ const playerService = PlayerService.getInstance();
 
 // Gets only connected player
 io.on("connection", (socket) => {
-  console.log(`connected: ${socket.id}`);
+  const playerName = socket.handshake.query.name;
+  console.log(`connected: ${socket.id}, name: ${playerName}`);
   socket.on("disconnect", () => {
     playerService.removePlayerById(socket.id);
-    console.log(`disconnected: ${socket.id}`);
+    console.log(`disconnected: ${socket.id}, name: ${playerName}`);
     // socket.broadcast.emit("disconnected", socket.id);
   });
 
   // TODO to update user position
-  socket.on(SOCKET_UPDATE_USER_POS, playerService.updatePlayerPosition.bind(playerService));
-
-  
+  socket.on(
+    SOCKET_UPDATE_USER_POS,
+    playerService.updatePlayerPosition.bind(playerService)
+  );
 
   // Emits new player to others
-  const spawnedPlayer = playerService.spawnPlayer(socket.id);
+  const spawnedPlayer = playerService.spawnPlayer(socket.id, playerName);
   socket.emit(SOCKET_SPAWN_PLAYER, spawnedPlayer);
-  // socket.broadcast.emit("new-player", player, players);
-});
+  socket.broadcast.emit(SOCKET_SPAWN_PLAYER, spawnedPlayer);
 
+  socket.emit(SOCKET_GET_CURRENT_PLAYERS, playerService.getPlayers());
+});
 
 // emits all players positions
 setInterval(() => {
-  io.emit(SOCKET_UPDATE_POSITIONS, playerService.players);
-}, 16);
+  io.emit(SOCKET_UPDATE_POSITIONS, playerService.getPlayerPositions());
+}, config.performance.refreshTime);
+
+console.log("Server started");

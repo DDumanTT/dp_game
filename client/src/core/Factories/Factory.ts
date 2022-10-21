@@ -14,6 +14,7 @@ export class Factory {
       case EntityType.Player:
         return new Player(
           socketPlayer.id,
+          socketPlayer.name,
           new Position(socketPlayer.position.x, socketPlayer.position.y),
           graphics
         );
