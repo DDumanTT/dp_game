@@ -1,13 +1,14 @@
-import config from "@shared/config";
+import { SquarePickupFactory } from "./../core/Factories/AbstractFactory";
+import PickupType from "@shared/constants/PickupType";
+import SocketPickup from "@shared/contracts/SocketPickup";
 import SocketPlayer from "@shared/contracts/SocketPlayer";
-import SocketPosition from "@shared/contracts/SocketPosition";
-import { Graphics } from "pixi.js";
 import MainPlayer from "../components/MainPlayer";
 import Player from "../components/Player";
 import Position from "../components/Position";
 import IAutoService from "../core/interfaces/IAutoService";
 import IEntity from "../core/interfaces/IEntity";
 import IGameManager from "../core/interfaces/IGameManager";
+import IPickup from "../core/interfaces/IPickup";
 
 export default class EntityService implements IAutoService {
   private _gameManager: IGameManager = null!;
@@ -18,6 +19,11 @@ export default class EntityService implements IAutoService {
   private _entities: IEntity[] = [];
   public get entities() {
     return this._entities;
+  }
+
+  private _pickups: IPickup[] = [];
+  public get pickups() {
+    return this._pickups;
   }
 
   private _mainPlayer: MainPlayer = null!;
@@ -86,6 +92,39 @@ export default class EntityService implements IAutoService {
         )
       );
     });
+  }
+
+  public spawnPickups(pickups: SocketPickup[]) {
+    // THIS IS SCUFFED AND TEMPORARY // TODO: FIX
+    const factory = new SquarePickupFactory();
+    // --------------------------------------
+    pickups.forEach((p) => {
+      this._pickups.push(
+        factory.createPickupEntity(
+          p.id,
+          new Position(p.position.x, p.position.y),
+          this._gameManager,
+          p.type
+        )
+      );
+    });
+  }
+
+  public removePickup(pickup: IPickup) {
+    const pickupIndex = this._pickups.indexOf(pickup);
+    this._pickups.splice(pickupIndex, 1);
+    pickup.destroy();
+  }
+
+  public updatePickup(pickup: SocketPickup) {
+    const factory = new SquarePickupFactory();
+    this._pickups[pickup.id].destroy();
+    this._pickups[pickup.id] = factory.createPickupEntity(
+      pickup.id,
+      new Position(pickup.position.x, pickup.position.y),
+      this._gameManager,
+      pickup.type
+    );
   }
 
   execute(gameManager: IGameManager): void {

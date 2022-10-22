@@ -104,6 +104,7 @@ export default class Player implements IEntity {
     });
     text.anchor.set(0.5);
     obj.addChild(text);
+    obj.zIndex = 10;
     levelPicker.level.container.addChild(obj);
     obj.position.set(this._spawnPosition.x, this._spawnPosition.y);
     return obj;

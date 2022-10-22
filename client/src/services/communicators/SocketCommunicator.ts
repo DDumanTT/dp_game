@@ -1,3 +1,8 @@
+import { SOCKET_UPDATE_PICKUP } from "./../../../../shared/constants/SocketConstants";
+import {
+  SOCKET_GET_PICKUPS,
+  SOCKET_SET_PICKUPS,
+} from "@shared/constants/SocketConstants";
 import { io as socketIO, Socket } from "socket.io-client";
 
 import CommunicatorBase from "../../core/base/CommunicatorBase";
@@ -9,6 +14,7 @@ import {
   SOCKET_UPDATE_USER_POS,
 } from "@shared/constants/SocketConstants";
 
+import SocketPickup from "@shared/contracts/SocketPickup";
 import SocketPlayer from "@shared/contracts/SocketPlayer";
 import SocketPosition from "@shared/contracts/SocketPosition";
 import IGameManager from "../../core/interfaces/IGameManager";
@@ -38,10 +44,13 @@ export default class SocketCommunicator extends CommunicatorBase {
     this._socket.on("connect", this.connect.bind(this));
     this._socket.on(SOCKET_SPAWN_PLAYER, this.spawnPlayer.bind(this));
     this._socket.on(SOCKET_UPDATE_POSITIONS, this.updatePositions.bind(this));
+    this._socket.on(SOCKET_UPDATE_PICKUP, this.updatePickup.bind(this));
+
     this._socket.once(
       SOCKET_GET_CURRENT_PLAYERS,
       this.addCurrentPlayers.bind(this)
     );
+    this._socket.once(SOCKET_GET_PICKUPS, this.getPickups.bind(this));
   }
 
   public sendPlayerPosition(player: Player) {
@@ -49,8 +58,6 @@ export default class SocketCommunicator extends CommunicatorBase {
     socketPlayer.id = player.id;
     socketPlayer.name = player.name;
     socketPlayer.position = new SocketPosition();
-    // socketPlayer.position.x = player.graphics.position.x;
-    // socketPlayer.position.y = player.graphics.position.y;
     socketPlayer.position.x = player.targetPosition.x;
     socketPlayer.position.y = player.targetPosition.y;
     this._socket.emit(SOCKET_UPDATE_USER_POS, socketPlayer);
@@ -77,5 +84,19 @@ export default class SocketCommunicator extends CommunicatorBase {
     entityService.addCurrentPlayers(players);
   }
 
-  // ---------------------------------------------
+  private getPickups(pickups: SocketPickup[]) {
+    const entityService = this.gameManager.getService(EntityService);
+    entityService.spawnPickups(pickups);
+  }
+
+  private updatePickup(pickup: SocketPickup) {
+    const entityService = this.gameManager.getService(EntityService);
+    entityService.updatePickup(pickup);
+  }
+
+  // Emitters ----------------------------------
+
+  public emitRemovePickup(id: number) {
+    this._socket.emit(SOCKET_SET_PICKUPS, id);
+  }
 }

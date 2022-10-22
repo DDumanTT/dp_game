@@ -13,8 +13,11 @@ import {
   SOCKET_SPAWN_PLAYER,
   SOCKET_UPDATE_USER_POS,
   SOCKET_GET_CURRENT_PLAYERS,
+  SOCKET_GET_PICKUPS,
+  SOCKET_SET_PICKUPS,
+  SOCKET_UPDATE_PICKUP,
 } from "@shared/constants/SocketConstants";
-import SocketPlayer from "@shared/contracts/SocketPlayer";
+import PickupService from "./services/PickupService";
 import PlayerService from "./services/PlayerService";
 
 const io = new sockets.Server(server, { cors: { origin: "*" } });
@@ -25,6 +28,7 @@ if (NODE_ENV == "production") {
 }
 
 const playerService = PlayerService.getInstance();
+const pickupService = PickupService.getInstance();
 
 // Gets only connected player
 io.on("connection", (socket) => {
@@ -48,6 +52,11 @@ io.on("connection", (socket) => {
   socket.broadcast.emit(SOCKET_SPAWN_PLAYER, spawnedPlayer);
 
   socket.emit(SOCKET_GET_CURRENT_PLAYERS, playerService.getPlayers());
+  socket.emit(SOCKET_GET_PICKUPS, pickupService.pickups);
+  socket.on(SOCKET_SET_PICKUPS, (id: number) => {
+    const newPickup = pickupService.consumePickup(id);
+    io.emit(SOCKET_UPDATE_PICKUP, newPickup);
+  });
 });
 
 // emits all players positions

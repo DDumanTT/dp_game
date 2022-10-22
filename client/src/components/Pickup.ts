@@ -1,55 +1,38 @@
-import { PickupArtifact } from "../core/interfaces/IEntityFactory";
 import Position from "./Position";
 import { Graphics } from "pixi.js";
 import IGameManager from "../core/interfaces/IGameManager";
+import BasePickup from "../core/base/BasePickup";
+import Player from "./Player";
+import SocketCommunicator from "../services/communicators/SocketCommunicator";
+import EntityService from "../services/EntityService";
+import LevelPickerService from "../services/LevelPickerService";
 
-export abstract class BasePickupArtifact implements PickupArtifact {
-  constructor(public name: string) {}
+export class GrowPickup extends BasePickup {
+  activate(player: Player) {
+    const socket = this.gameManager.getService(SocketCommunicator);
+    socket.emitRemovePickup(this.id);
+    // const entityService = this.gameManager.getService(EntityService);
+    // entityService.removePickup(this);
+    // this.destroy();
 
-  abstract ability(): void;
-}
+    // const levelPicker = this.gameManager.getService(LevelPickerService);
+    // levelPicker.level.container.width -= 10;
+    // levelPicker.level.container.height -= 10;
+    // player.graphics.width += 10;
+    // player.graphics.height += 10;
 
-export class Pickup extends BasePickupArtifact {
-  constructor(public name: string) {
-    super(name);
-    console.log("Pickup created");
-  }
-
-  ability() {
-    console.log("");
-  }
-}
-
-export class Grow extends Pickup {
-  constructor(
-    id: string,
-    name: string,
-    spawnPosition: Position,
-    gameManager: IGameManager,
-    graphics?: Graphics
-  ) {
-    super(name);
-    console.log("Grow Pickup created");
-  }
-
-  ability() {
     console.log("We getting bigger");
   }
 }
 
-export class Speed extends Pickup {
-  constructor(
-    id: string,
-    name: string,
-    spawnPosition: Position,
-    gameManager: IGameManager,
-    graphics?: Graphics
-  ) {
-    super(name);
-    console.log("Speed Pickup created");
-  }
+export class SpeedPickup extends BasePickup {
+  activate(player: Player) {
+    const socket = this.gameManager.getService(SocketCommunicator);
+    socket.emitRemovePickup(this.id);
+    // const entityService = this.gameManager.getService(EntityService);
+    // entityService.removePickup(this);
+    // this.destroy();
 
-  ability() {
     console.log("SPEED IS KEY");
   }
 }

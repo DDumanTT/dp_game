@@ -7,9 +7,6 @@ import SocketCommunicator from "../services/communicators/SocketCommunicator";
 import LevelPickerService from "../services/LevelPickerService";
 import EntityService from "../services/EntityService";
 import GameLoopBase from "./base/GameLoopBase";
-import { Factory } from "./Factories/Factory";
-import IEntity from "./interfaces/IEntity";
-import { EntityType } from "./interfaces/IEntityFactory";
 import IGameManager from "./interfaces/IGameManager";
 
 export default class Game extends GameLoopBase {

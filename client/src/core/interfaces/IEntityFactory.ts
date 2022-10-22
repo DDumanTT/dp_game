@@ -3,11 +3,6 @@ export enum EntityType {
   Player,
 }
 
-export interface PickupArtifact {
-  name: string;
-  ability(): void;
-}
-
 export enum CirclePickupType {
   Grow,
   Speed,

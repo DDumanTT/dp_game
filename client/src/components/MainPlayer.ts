@@ -5,6 +5,7 @@ import IMovementStrategy from "../core/interfaces/IMovementStrategy";
 import InvertedMovementStrategy from "../core/strategies/InvertedMovementStrategy";
 import RegularMovementStrategy from "../core/strategies/RegularMovementStrategy";
 import SocketCommunicator from "../services/communicators/SocketCommunicator";
+import EntityService from "../services/EntityService";
 import LevelPickerService from "../services/LevelPickerService";
 import Player from "./Player";
 import Position from "./Position";
@@ -64,11 +65,23 @@ export default class MainPlayer extends Player {
     return [newX, newY];
   }
 
+  public checkCollisionWithPickups() {
+    const { x, y } = this.graphics.position;
+    const entityService = this._gameManager.getService(EntityService);
+    entityService.pickups.forEach((p) => {
+      const { x: pX, y: pY } = p.position;
+      if (Math.sqrt((x - pX) ** 2 + (y - pY) ** 2) < this._size && p.id >= 0) {
+        p.activate(this);
+        p.destroy();
+      }
+    });
+  }
+
   public update(delta: number): void {
     const levelPicker = this._gameManager.getService(LevelPickerService);
     this.followMouse(delta);
-    // this.interpolate(delta);
     this.keepWithinBounds();
     levelPicker.follow(this.graphics.position, this._gameManager.app);
+    this.checkCollisionWithPickups();
   }
 }
