@@ -30,7 +30,16 @@ export default class LevelPickerService implements ILevelPicker, IAutoService {
 
   private keepWithinBounds(position: Position, app: Application) {
     const levelPos = this._level.container.position;
-    this._level.container.position.x = -position.x + app.screen.width / 2;
+    // console.log(levelPos.x);
+    // if (position.x < app.screen.width / 2) {
+    //   levelPos.x = 0;
+    // }
+
+    // if (position.y < app.screen.height / 2) {
+    //   levelPos.y = 0;
+    // }
+
+    levelPos.x = -position.x + app.screen.width / 2;
     if (levelPos.x > 0) {
       levelPos.x = 0;
     } else if (levelPos.x < -(config.world.width - app.screen.width)) {
@@ -46,11 +55,12 @@ export default class LevelPickerService implements ILevelPicker, IAutoService {
   }
 
   follow(position: Position, app: Application) {
+    this._level.container.pivot.set(position.x, position.y);
+
     this._level.container.position.set(
-      app.view.width / 2 - position.x,
-      app.view.height / 2 - position.y
+      app.screen.width / 2,
+      app.screen.height / 2
     );
-    this.keepWithinBounds(position, app);
   }
 
   execute(gameManager: IGameManager): void {

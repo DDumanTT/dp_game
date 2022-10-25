@@ -37,16 +37,16 @@ export default class MainPlayer extends Player {
   }
 
   private keepWithinBounds() {
-    if (this._graphics.x < 50) {
-      this._graphics.x = 50;
-    } else if (this._graphics.x > config.world.width - 50) {
-      this._graphics.x = config.world.width - 50;
+    if (this._graphics.x < this.size) {
+      this._graphics.x = this.size;
+    } else if (this._graphics.x > config.world.width - this.size) {
+      this._graphics.x = config.world.width - this.size;
     }
 
-    if (this._graphics.y < 50) {
-      this._graphics.y = 50;
-    } else if (this._graphics.y > config.world.height - 50) {
-      this._graphics.y = config.world.height - 50;
+    if (this._graphics.y < this.size) {
+      this._graphics.y = this.size;
+    } else if (this._graphics.y > config.world.height - this.size) {
+      this._graphics.y = config.world.height - this.size;
     }
   }
 
@@ -77,11 +77,32 @@ export default class MainPlayer extends Player {
     });
   }
 
+  public checkCollisionWithPlayers() {
+    const { x, y } = this.graphics.position;
+    const entityService = this._gameManager.getService(EntityService);
+    entityService.entities.forEach((p) => {
+      if (p.id === this.id) return;
+      const { x: pX, y: pY } = p.graphics.position;
+      if (Math.sqrt((x - pX) ** 2 + (y - pY) ** 2) - this._size < 0) {
+        if (this.size - p.size > 25) this.consume(p);
+      }
+    });
+  }
+
+  private consume(player: IEntity) {
+    this.size += player.size;
+    const entityService = this._gameManager.getService(EntityService);
+    entityService.removeEntity(player);
+    const socket = this._gameManager.getService(SocketCommunicator);
+    socket.removePlayer(player.id);
+  }
+
   public update(delta: number): void {
     const levelPicker = this._gameManager.getService(LevelPickerService);
     this.followMouse(delta);
     this.keepWithinBounds();
     levelPicker.follow(this.graphics.position, this._gameManager.app);
     this.checkCollisionWithPickups();
+    this.checkCollisionWithPlayers();
   }
 }

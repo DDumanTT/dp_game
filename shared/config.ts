@@ -4,8 +4,8 @@ export default {
     refreshTime: 200,
   },
   world: {
-    width: 4000,
-    height: 6000,
+    width: 6000,
+    height: 4000,
   },
   communicators: {
     sockets: "http://localhost:3000",

@@ -1,8 +1,3 @@
-import { SOCKET_UPDATE_PICKUP } from "./../../../../shared/constants/SocketConstants";
-import {
-  SOCKET_GET_PICKUPS,
-  SOCKET_SET_PICKUPS,
-} from "@shared/constants/SocketConstants";
 import { io as socketIO, Socket } from "socket.io-client";
 
 import CommunicatorBase from "../../core/base/CommunicatorBase";
@@ -10,8 +5,12 @@ import CommunicatorBase from "../../core/base/CommunicatorBase";
 import {
   SOCKET_GET_CURRENT_PLAYERS,
   SOCKET_SPAWN_PLAYER,
-  SOCKET_UPDATE_POSITIONS,
   SOCKET_UPDATE_USER_POS,
+  SOCKET_UPDATE_PLAYERS,
+  SOCKET_UPDATE_PICKUP,
+  SOCKET_GET_PICKUPS,
+  SOCKET_SET_PICKUPS,
+  SOCKET_REMOVE_PLAYER,
 } from "@shared/constants/SocketConstants";
 
 import SocketPickup from "@shared/contracts/SocketPickup";
@@ -43,7 +42,7 @@ export default class SocketCommunicator extends CommunicatorBase {
     this.gameManager = gameManager;
     this._socket.on("connect", this.connect.bind(this));
     this._socket.on(SOCKET_SPAWN_PLAYER, this.spawnPlayer.bind(this));
-    this._socket.on(SOCKET_UPDATE_POSITIONS, this.updatePositions.bind(this));
+    this._socket.on(SOCKET_UPDATE_PLAYERS, this.updatePlayers.bind(this));
     this._socket.on(SOCKET_UPDATE_PICKUP, this.updatePickup.bind(this));
 
     this._socket.once(
@@ -51,12 +50,17 @@ export default class SocketCommunicator extends CommunicatorBase {
       this.addCurrentPlayers.bind(this)
     );
     this._socket.once(SOCKET_GET_PICKUPS, this.getPickups.bind(this));
+
+    this._socket.on("error", (err) => {
+      console.log(err); // prints the message associated with the error
+    });
   }
 
   public sendPlayerPosition(player: Player) {
     const socketPlayer = new SocketPlayer();
     socketPlayer.id = player.id;
     socketPlayer.name = player.name;
+    socketPlayer.size = player.size;
     socketPlayer.position = new SocketPosition();
     socketPlayer.position.x = player.targetPosition.x;
     socketPlayer.position.y = player.targetPosition.y;
@@ -69,9 +73,9 @@ export default class SocketCommunicator extends CommunicatorBase {
     console.log("connected");
   }
 
-  private updatePositions(players: Record<string, SocketPlayer>) {
+  private updatePlayers(players: Record<string, SocketPlayer>) {
     const entityService = this.gameManager.getService(EntityService);
-    entityService.updatePositions(players);
+    entityService.updatePlayers(players);
   }
 
   private spawnPlayer(player: SocketPlayer) {
@@ -98,5 +102,9 @@ export default class SocketCommunicator extends CommunicatorBase {
 
   public emitRemovePickup(id: number) {
     this._socket.emit(SOCKET_SET_PICKUPS, id);
+  }
+
+  public removePlayer(id: string) {
+    this._socket.emit(SOCKET_REMOVE_PLAYER, id);
   }
 }

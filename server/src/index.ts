@@ -9,13 +9,14 @@ const server = app.listen(PORT);
 
 import config from "@shared/config";
 import {
-  SOCKET_UPDATE_POSITIONS,
   SOCKET_SPAWN_PLAYER,
   SOCKET_UPDATE_USER_POS,
   SOCKET_GET_CURRENT_PLAYERS,
   SOCKET_GET_PICKUPS,
   SOCKET_SET_PICKUPS,
   SOCKET_UPDATE_PICKUP,
+  SOCKET_UPDATE_PLAYERS,
+  SOCKET_REMOVE_PLAYER,
 } from "@shared/constants/SocketConstants";
 import PickupService from "./services/PickupService";
 import PlayerService from "./services/PlayerService";
@@ -57,11 +58,15 @@ io.on("connection", (socket) => {
     const newPickup = pickupService.consumePickup(id);
     io.emit(SOCKET_UPDATE_PICKUP, newPickup);
   });
+  socket.on(
+    SOCKET_REMOVE_PLAYER,
+    playerService.removePlayerById.bind(playerService)
+  );
 });
 
 // emits all players positions
 setInterval(() => {
-  io.emit(SOCKET_UPDATE_POSITIONS, playerService.getPlayerPositions());
+  io.emit(SOCKET_UPDATE_PLAYERS, playerService.getPlayerPositions());
 }, config.performance.refreshTime);
 
 console.log("Server started");

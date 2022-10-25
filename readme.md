@@ -6,18 +6,25 @@ Singleton:
     PlayerService.ts;
 
 Factory:
+    
 
 Absract Factory:
 
+
 Strategy:
+
 
 Observer:
 
+
 Builder
+
 
 Prototype
 
+
 Decorator:
+
 
 Command:
 

@@ -31,6 +31,7 @@ function startGame(playerName: string) {
     resizeTo: window,
     backgroundColor: 0x000000,
   });
+
   app.ticker.maxFPS = config.performance.fps;
 
   const gameManagerBuilder = new GameManagerBuilder(app);

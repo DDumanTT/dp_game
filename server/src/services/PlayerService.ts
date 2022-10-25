@@ -26,6 +26,7 @@ export default class PlayerService {
     let player: SocketPlayer = {
       name,
       id: socketId,
+      size: 50,
       position: {
         x: this.generatePosition(0, config.world.width),
         y: this.generatePosition(0, config.world.height),
@@ -53,6 +54,7 @@ export default class PlayerService {
     // for testing...
     // console.log(currentPlayer.position);
     currentPlayer.position = player.position;
+    currentPlayer.size = player.size;
   }
 
   public getPlayerPositions() {

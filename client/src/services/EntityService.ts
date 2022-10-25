@@ -1,4 +1,7 @@
-import { SquarePickupFactory } from "./../core/Factories/AbstractFactory";
+import {
+  CirclePickupFactory,
+  SquarePickupFactory,
+} from "./../core/Factories/AbstractFactory";
 import PickupType from "@shared/constants/PickupType";
 import SocketPickup from "@shared/contracts/SocketPickup";
 import SocketPlayer from "@shared/contracts/SocketPlayer";
@@ -51,6 +54,7 @@ export default class EntityService implements IAutoService {
         player.id,
         player.name,
         new Position(player.position.x, player.position.y),
+        player.size,
         this._gameManager
       );
 
@@ -64,20 +68,32 @@ export default class EntityService implements IAutoService {
         player.id,
         player.name,
         new Position(player.position.x, player.position.y),
+        player.size,
         this._gameManager
       )
     );
   }
 
-  public updatePositions(players: Record<string, SocketPlayer>) {
+  public updatePlayers(players: Record<string, SocketPlayer>) {
+    let alive = false;
     this._entities.forEach((e) => {
-      if (e.id === this._mainPlayer.id) return;
+      if (e.id === this._mainPlayer.id) {
+        alive = true;
+        return;
+      }
       if (players[e.id]) {
-        e.move(players[e.id].position.x, players[e.id].position.y);
+        const player = players[e.id];
+        e.move(player.position.x, player.position.y, player.size);
       } else {
         this.removeEntity(e);
       }
     });
+
+    if (!alive) {
+      // TODO: Allow main player to be undefined - game over state.
+      this._mainPlayer = undefined;
+      this.removeEntity(this._mainPlayer);
+    }
   }
 
   public addCurrentPlayers(players: SocketPlayer[]) {
@@ -88,6 +104,7 @@ export default class EntityService implements IAutoService {
           p.id,
           p.name,
           new Position(p.position.x, p.position.y),
+          p.size,
           this._gameManager
         )
       );
@@ -95,8 +112,8 @@ export default class EntityService implements IAutoService {
   }
 
   public spawnPickups(pickups: SocketPickup[]) {
-    // THIS IS SCUFFED AND TEMPORARY // TODO: FIX
-    const factory = new SquarePickupFactory();
+    // THIS IS SCUFFED AND TEMPORARY // TODO: MOVE FACTORY INTO LevelBase
+    const factory = new CirclePickupFactory();
     // --------------------------------------
     pickups.forEach((p) => {
       this._pickups.push(

@@ -26,6 +26,11 @@ export default class Player implements IEntity {
   public get size(): number {
     return this._size;
   }
+  public set size(value: number) {
+    this._graphics.width = value * 2;
+    this._graphics.height = value * 2;
+    this._size = value;
+  }
 
   protected _spawnPosition: Position;
   public get spawnPosition(): Position {
@@ -52,12 +57,13 @@ export default class Player implements IEntity {
     id: string,
     name: string,
     spawnPosition: Position,
+    size: number,
     gameManager: IGameManager,
     graphics?: Graphics
   ) {
     this._id = id;
     this._name = name;
-    this._size = 50;
+    this._size = size;
     this._spawnPosition = spawnPosition;
     this._originPosition = new Position(spawnPosition.x, spawnPosition.y);
     this._targetPosition = new Position(spawnPosition.x, spawnPosition.y);
@@ -94,7 +100,9 @@ export default class Player implements IEntity {
     const levelPicker = this._gameManager.getService(LevelPickerService);
     const obj = new Graphics();
     obj.beginFill(0xff0000);
-    obj.drawCircle(0, 0, this._size);
+    obj.drawCircle(0, 0, 50);
+    obj.width = this._size * 2;
+    obj.height = this._size * 2;
     const text = new Text(this._name, {
       align: "center",
       breakWords: true,
@@ -114,14 +122,14 @@ export default class Player implements IEntity {
     this._graphics.destroy();
   }
 
-  public move(x: number, y: number): [x: number, y: number] {
+  public move(x: number, y: number, size: number) {
     this._msElapsed = 0;
     this._originPosition.set(this._targetPosition.x, this._targetPosition.y);
     // this._graphics.position.x = newX;
     // this._graphics.position.y = newY;
     this._targetPosition.set(x, y);
-    const socket = this._gameManager.getService(SocketCommunicator);
-    socket.sendPlayerPosition(this);
-    return [x, y];
+    this.size = size;
+    // const socket = this._gameManager.getService(SocketCommunicator);
+    // socket.sendPlayerPosition(this);
   }
 }

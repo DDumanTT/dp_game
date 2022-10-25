@@ -22,6 +22,8 @@ export default abstract class LevelBase implements ILevel {
   constructor() {
     this.loader = new Loader();
     this._container.sortableChildren = true;
+    // this._container.pivot.set(1000, 1000);
+    // this._container.position.set(1000, 1000);
   }
 
   public load(setupUpdate: () => void, app: Application) {
