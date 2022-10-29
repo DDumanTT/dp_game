@@ -3,5 +3,5 @@ import ILevel from "./ILevel";
 
 export default interface ILevelPicker {
   setLevel(level: ILevel): void;
-  loadLevel(setupUpdate: () => void, app: Application): void;
+  loadLevel(app: Application): void;
 }

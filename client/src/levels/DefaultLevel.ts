@@ -35,18 +35,6 @@ export default class DefaultLevel extends GameLoopBase {
 
   private readonly _mousePosition: Position = new Position(0, 0);
 
-  public override loadAssets(loader: Loader) {
-    loader.add(groundImage);
-  }
-
-  public override loadSprites(loader: Loader, resources: Dict<LoaderResource>) {
-    this._spriteCache[groundImage] = new TilingSprite(
-      resources[groundImage].texture!,
-      config.world.width,
-      config.world.height
-    );
-  }
-
   public start(): void {
     this._level.addChild(this._spriteCache[groundImage]);
     this.app.stage.addChild(this._level);
@@ -69,7 +57,7 @@ export default class DefaultLevel extends GameLoopBase {
   }
 
   private _seconds: number = 0;
-  public update(delta: number): void {
+  public setupObservers(delta: number): void {
     const socket = this.gameManager.getService(SocketCommunicator);
 
     if (this._currentPixiPlayer) {

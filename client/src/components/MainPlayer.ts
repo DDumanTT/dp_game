@@ -1,5 +1,4 @@
 import config from "@shared/config";
-import { Graphics } from "pixi.js";
 import IEntity from "../core/interfaces/IEntity";
 import IMovementStrategy from "../core/interfaces/IMovementStrategy";
 import InvertedMovementStrategy from "../core/strategies/InvertedMovementStrategy";
@@ -12,6 +11,15 @@ import Position from "./Position";
 
 export default class MainPlayer extends Player {
   private _mousePosition: Position = new Position(0, 0);
+  private _speed: number = 5;
+
+  private _movementStrategy: IMovementStrategy = new RegularMovementStrategy();
+  public get movementStrategy() {
+    return this._movementStrategy;
+  }
+  public setMovementStrategy(strategy: IMovementStrategy) {
+    this._movementStrategy = strategy;
+  }
 
   private followMouse(delta: number) {
     const playerPosOnScreen = this.graphics.getGlobalPosition();
@@ -26,7 +34,7 @@ export default class MainPlayer extends Player {
       mouseX - playerPosOnScreen.x
     );
 
-    distance = (distance.clamp(-300, 300) * delta) / 50;
+    distance = (distance.clamp(0, 300) / 300) * delta * this._speed;
 
     let x = distance * Math.cos(angle);
     let y = distance * Math.sin(angle);
@@ -65,6 +73,27 @@ export default class MainPlayer extends Player {
     return [newX, newY];
   }
 
+  private _spedUp = false;
+  public get isSpeed() {
+    return this._spedUp;
+  }
+
+  public speedUp(amount: number, time: number) {
+    this._spedUp = true;
+    this._speed += amount;
+    setTimeout(() => {
+      this._spedUp = false;
+      this._speed -= amount;
+    }, time);
+  }
+
+  public reverseMovement(time: number) {
+    this.setMovementStrategy(new InvertedMovementStrategy());
+    setTimeout(() => {
+      this.setMovementStrategy(new RegularMovementStrategy());
+    }, time);
+  }
+
   public checkCollisionWithPickups() {
     const { x, y } = this.graphics.position;
     const entityService = this._gameManager.getService(EntityService);
@@ -98,6 +127,7 @@ export default class MainPlayer extends Player {
   }
 
   public update(delta: number): void {
+    console.log(this.graphics.x, this.graphics.y);
     const levelPicker = this._gameManager.getService(LevelPickerService);
     this.followMouse(delta);
     this.keepWithinBounds();

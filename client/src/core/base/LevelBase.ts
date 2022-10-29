@@ -7,31 +7,47 @@ import {
   LoaderResource,
   Sprite,
 } from "pixi.js";
+import { IPickupFactory } from "../Factories/AbstractFactory";
+import Game from "../Game";
+import IGameManager from "../interfaces/IGameManager";
 import ILevel from "../interfaces/ILevel";
 
 export default abstract class LevelBase implements ILevel {
-  protected readonly spriteCache: Record<string, Sprite> = {};
+  private readonly _gameManager: IGameManager;
 
+  protected readonly spriteCache: Record<string, Sprite> = {};
   protected readonly _container = new Container();
   public get container(): Container {
     return this._container;
   }
 
+  protected _pickupFactory: IPickupFactory;
+
   protected loader: Loader;
 
-  constructor() {
+  constructor(gameManager: IGameManager, pickupFactory: IPickupFactory) {
     this.loader = new Loader();
     this._container.sortableChildren = true;
+    this._pickupFactory = pickupFactory;
+    this._gameManager = gameManager;
+
     // this._container.pivot.set(1000, 1000);
     // this._container.position.set(1000, 1000);
   }
 
-  public load(setupUpdate: () => void, app: Application) {
+  public load(app: Application) {
     this.loadAssets();
     this.loader.load(this.loadSprites.bind(this));
     this.loader.onComplete.add(() => app.stage.addChild(this.container), this);
     this.loader.onComplete.add(this.addToContainer, this);
-    this.loader.onComplete.add(setupUpdate);
+    // this.loader.onLoad.add(() => {
+    //   console.log(11);
+
+    //   const game = this._gameManager.getService(Game);
+    //   this._gameManager.app.ticker.add((delta: number) => {
+    //     game.notifyObservers(delta);
+    //   });
+    // });
   }
 
   public abstract addToContainer(): void;

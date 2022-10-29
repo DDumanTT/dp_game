@@ -6,6 +6,7 @@ import { Application } from "pixi.js";
 import Position from "@shared/contracts/SocketPosition";
 import config from "@shared/config";
 import IGameManager from "../core/interfaces/IGameManager";
+import { CirclePickupFactory } from "../core/Factories/AbstractFactory";
 
 export default class LevelPickerService implements ILevelPicker, IAutoService {
   private _gameManager: IGameManager = null!;
@@ -21,11 +22,14 @@ export default class LevelPickerService implements ILevelPicker, IAutoService {
   }
 
   public constructor() {
-    this._level = new FirstLevel();
+    this._level = new FirstLevel(
+      this._gameManager,
+      new CirclePickupFactory(this._gameManager)
+    );
   }
 
-  loadLevel(setupUpdate: () => void, app: Application) {
-    this._level.load(setupUpdate, app);
+  loadLevel(app: Application) {
+    this._level.load(app);
   }
 
   private keepWithinBounds(position: Position, app: Application) {

@@ -9,10 +9,12 @@ export default class GameDependencies {
   protected set app(value: Application) {
     this._app = value;
   }
-  protected services: IAutoService[] = [];
+  protected autoServices: IAutoService[] = [];
+  protected services: any[] = [];
 
-  constructor(app: Application, services: IAutoService[]) {
+  constructor(app: Application, autoServices: IAutoService[], services: any[]) {
     this._app = app;
+    this.autoServices = autoServices;
     this.services = services;
   }
 }

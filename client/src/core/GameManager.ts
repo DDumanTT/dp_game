@@ -6,7 +6,10 @@ export default class GameManager
   implements IGameManager
 {
   public getService<T>(type: { new (...args: any[]): T }): T {
-    const service = this.services.find((x) => x instanceof type) as T;
+    const service =
+      (this.autoServices.find((x) => x instanceof type) as T) ??
+      (this.services.find((x) => x instanceof type) as T);
+
     if (service == undefined) {
       throw new Error(`Service of type "${type}", does not exist.`);
     }

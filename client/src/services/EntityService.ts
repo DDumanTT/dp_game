@@ -12,6 +12,8 @@ import IAutoService from "../core/interfaces/IAutoService";
 import IEntity from "../core/interfaces/IEntity";
 import IGameManager from "../core/interfaces/IGameManager";
 import IPickup from "../core/interfaces/IPickup";
+import Game from "../core/Game";
+import GameLoopBase from "../core/base/GameLoopBase";
 
 export default class EntityService implements IAutoService {
   private _gameManager: IGameManager = null!;
@@ -49,6 +51,7 @@ export default class EntityService implements IAutoService {
   }
 
   public spawnPlayer(player: SocketPlayer) {
+    const game = this._gameManager.getService(Game);
     if (!this._mainPlayerInitialized) {
       this._mainPlayer = new MainPlayer(
         player.id,
@@ -58,20 +61,23 @@ export default class EntityService implements IAutoService {
         this._gameManager
       );
 
+      game.addObserver(this._mainPlayer);
       this._mainPlayerInitialized = true;
       this.addEntity(this._mainPlayer);
       return;
     }
 
-    this.addEntity(
-      new Player(
-        player.id,
-        player.name,
-        new Position(player.position.x, player.position.y),
-        player.size,
-        this._gameManager
-      )
+    const _player = new Player(
+      player.id,
+      player.name,
+      new Position(player.position.x, player.position.y),
+      player.size,
+      this._gameManager
     );
+
+    game.addObserver(_player);
+
+    this.addEntity(_player);
   }
 
   public updatePlayers(players: Record<string, SocketPlayer>) {
@@ -91,36 +97,37 @@ export default class EntityService implements IAutoService {
 
     if (!alive) {
       // TODO: Allow main player to be undefined - game over state.
-      this._mainPlayer = undefined;
-      this.removeEntity(this._mainPlayer);
+      // this._mainPlayer = undefined;
+      // this.removeEntity(this._mainPlayer);
     }
   }
 
   public addCurrentPlayers(players: SocketPlayer[]) {
+    const game = this._gameManager.getService(Game);
+
     players.forEach((p) => {
       if (p.id === this._mainPlayer.id) return;
-      this.addEntity(
-        new Player(
-          p.id,
-          p.name,
-          new Position(p.position.x, p.position.y),
-          p.size,
-          this._gameManager
-        )
+      const player = new Player(
+        p.id,
+        p.name,
+        new Position(p.position.x, p.position.y),
+        p.size,
+        this._gameManager
       );
+      game.addObserver(player);
+      this.addEntity(player);
     });
   }
 
   public spawnPickups(pickups: SocketPickup[]) {
     // THIS IS SCUFFED AND TEMPORARY // TODO: MOVE FACTORY INTO LevelBase
-    const factory = new CirclePickupFactory();
+    const factory = new CirclePickupFactory(this._gameManager);
     // --------------------------------------
     pickups.forEach((p) => {
       this._pickups.push(
         factory.createPickupEntity(
           p.id,
           new Position(p.position.x, p.position.y),
-          this._gameManager,
           p.type
         )
       );
@@ -134,12 +141,11 @@ export default class EntityService implements IAutoService {
   }
 
   public updatePickup(pickup: SocketPickup) {
-    const factory = new SquarePickupFactory();
+    const factory = new SquarePickupFactory(this._gameManager);
     this._pickups[pickup.id].destroy();
     this._pickups[pickup.id] = factory.createPickupEntity(
       pickup.id,
       new Position(pickup.position.x, pickup.position.y),
-      this._gameManager,
       pickup.type
     );
   }

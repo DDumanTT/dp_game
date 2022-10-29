@@ -20,13 +20,6 @@ export default class Game extends GameLoopBase {
     // const entityService = this.gameManager.getService(EntityService);
 
     const levelPicker = this.gameManager.getService(LevelPickerService);
-    levelPicker.loadLevel(this.setupUpdate.bind(this), this.gameManager.app);
-  }
-
-  public update(delta: number): void {
-    const entityService = this.gameManager.getService(EntityService);
-    entityService.entities.forEach((e) => {
-      e.update(delta);
-    });
+    levelPicker.loadLevel(this.gameManager.app);
   }
 }

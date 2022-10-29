@@ -10,8 +10,9 @@ import SocketCommunicator from "../services/communicators/SocketCommunicator";
 import EntityService from "../services/EntityService";
 import LevelPickerService from "../services/LevelPickerService";
 import Position from "./Position";
+import IObserver from "../core/interfaces/IObserver";
 
-export default class Player implements IEntity {
+export default class Player implements IEntity, IObserver<number> {
   protected _id: string;
   public get id(): string {
     return this._id;
@@ -43,11 +44,6 @@ export default class Player implements IEntity {
 
   protected _gameManager: IGameManager;
 
-  protected _movementStrategy: IMovementStrategy;
-  public setMovementStrategy(strategy: IMovementStrategy) {
-    this._movementStrategy = strategy;
-  }
-
   protected _originPosition: Position;
   protected _targetPosition: Position;
   public get targetPosition() {
@@ -69,7 +65,6 @@ export default class Player implements IEntity {
     this._targetPosition = new Position(spawnPosition.x, spawnPosition.y);
     this._gameManager = gameManager;
     this._graphics = graphics ? graphics : this.drawPlayer();
-    this._movementStrategy = new RegularMovementStrategy();
   }
 
   private lerp = (p0: number, p1: number, t: number) => (1 - t) * p0 + t * p1;
@@ -99,7 +94,8 @@ export default class Player implements IEntity {
   protected drawPlayer() {
     const levelPicker = this._gameManager.getService(LevelPickerService);
     const obj = new Graphics();
-    obj.beginFill(0xff0000);
+    const color = Math.floor(Math.random() * 0xffffff);
+    obj.beginFill(color);
     obj.drawCircle(0, 0, 50);
     obj.width = this._size * 2;
     obj.height = this._size * 2;

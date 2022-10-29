@@ -38,12 +38,15 @@ function startGame(playerName: string) {
   gameManagerBuilder.addAutoService(
     new SocketCommunicator(config.communicators.sockets, playerName)
   );
+  gameManagerBuilder.addService(Game);
   gameManagerBuilder.addAutoService(new LevelPickerService());
   gameManagerBuilder.addAutoService(new EntityService());
 
   const gameManager = gameManagerBuilder.build();
-
-  const game = new Game(gameManager);
+  const game = gameManager.getService(Game);
+  gameManager.app.ticker.add((delta: number) => {
+    game.notifyObservers(delta);
+  });
 
   game.start();
 }

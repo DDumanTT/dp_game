@@ -1,6 +1,7 @@
 import { Graphics } from "pixi.js";
 import Player from "../../components/Player";
 import Position from "../../components/Position";
+import LevelPickerService from "../../services/LevelPickerService";
 import IGameManager from "../interfaces/IGameManager";
 import IPickup from "../interfaces/IPickup";
 
@@ -35,6 +36,9 @@ export default abstract class BasePickup implements IPickup {
     this._position = position;
     this._graphics = graphics;
     this._gameManager = gameManager;
+
+    const levelPicker = gameManager.getService(LevelPickerService);
+    levelPicker.level.container.addChild(graphics);
   }
 
   public destroy(): void {

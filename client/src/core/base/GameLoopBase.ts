@@ -1,7 +1,11 @@
 import IGameLoop from "../interfaces/IGameLoop";
 import IGameManager from "../interfaces/IGameManager";
+import Observable from "../observables/Observable";
 
-export default abstract class GameLoopBase implements IGameLoop {
+export default abstract class GameLoopBase
+  extends Observable<number>
+  implements IGameLoop
+{
   protected gameManager: IGameManager;
 
   protected get app() {
@@ -9,15 +13,9 @@ export default abstract class GameLoopBase implements IGameLoop {
   }
 
   constructor(gameManager: IGameManager) {
+    super();
     this.gameManager = gameManager;
   }
 
   public abstract start(): void;
-  public abstract update(delta: number): void;
-
-  protected setupUpdate() {
-    this.gameManager.app.ticker.add((delta) => {
-      this.update(delta);
-    });
-  }
 }
