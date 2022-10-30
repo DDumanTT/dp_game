@@ -1,4 +1,5 @@
 import { Graphics } from "pixi.js";
+import MainPlayer from "../../components/MainPlayer";
 import Player from "../../components/Player";
 import Position from "../../components/Position";
 import LevelPickerService from "../../services/LevelPickerService";
@@ -48,5 +49,5 @@ export default abstract class BasePickup implements IPickup {
     }
   }
 
-  abstract activate(player: Player): void;
+  abstract activate(player: MainPlayer): void;
 }

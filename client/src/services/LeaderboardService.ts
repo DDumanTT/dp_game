@@ -5,6 +5,7 @@ import ILeaderboardUser from "../core/interfaces/ILeaderboardUser";
 import EntityService from "./EntityService";
 
 import LeaderBoardAdapter from "../core/adapter/LeaderBoardAdapter";
+import Entities from "../core/adapter/Entities";
 
 export default class LeaderboardService implements IAutoService {
   private _leaderboardContent = "";
@@ -26,14 +27,14 @@ export default class LeaderboardService implements IAutoService {
     if (this._gameManager == null) {
       return;
     }
-    var a = this._gameManager.getService(EntityService);
-    // pass entities to adapter
-    var adapter = new LeaderBoardAdapter(a.entities);
+    var entityService = this._gameManager.getService(EntityService);
 
+    // pass entities to adapter
+    var entities = new Entities(entityService.entities);
+    var adapter = new LeaderBoardAdapter(entities.entities());
     var users = adapter.players();
 
     users.sort((a: ILeaderboardUser, b: ILeaderboardUser) => b.score - a.score);
-
     users = users.slice(0, 10);
 
     var content = LeaderBoardStyle(users);
@@ -41,6 +42,7 @@ export default class LeaderboardService implements IAutoService {
     var leaderboardElement = document.getElementById(
       "leaderboard"
     ) as HTMLInputElement;
+
     leaderboardElement.innerHTML = content;
   }
 }

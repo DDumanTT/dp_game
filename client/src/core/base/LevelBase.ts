@@ -22,6 +22,9 @@ export default abstract class LevelBase implements ILevel {
   }
 
   protected _pickupFactory: IPickupFactory;
+  public get pickupFactory() {
+    return this._pickupFactory;
+  }
 
   protected loader: Loader;
 
@@ -30,9 +33,6 @@ export default abstract class LevelBase implements ILevel {
     this._container.sortableChildren = true;
     this._pickupFactory = pickupFactory;
     this._gameManager = gameManager;
-
-    // this._container.pivot.set(1000, 1000);
-    // this._container.position.set(1000, 1000);
   }
 
   public load(app: Application) {
@@ -40,14 +40,6 @@ export default abstract class LevelBase implements ILevel {
     this.loader.load(this.loadSprites.bind(this));
     this.loader.onComplete.add(() => app.stage.addChild(this.container), this);
     this.loader.onComplete.add(this.addToContainer, this);
-    // this.loader.onLoad.add(() => {
-    //   console.log(11);
-
-    //   const game = this._gameManager.getService(Game);
-    //   this._gameManager.app.ticker.add((delta: number) => {
-    //     game.notifyObservers(delta);
-    //   });
-    // });
   }
 
   public abstract addToContainer(): void;

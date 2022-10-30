@@ -48,9 +48,10 @@ export default class PlayerService {
 
   public updatePlayerPosition(player: SocketPlayer) {
     const currentPlayer = this._players.find((p) => p.id === player.id);
-    if (currentPlayer == undefined || currentPlayer == null) {
+    if (!currentPlayer) {
       return;
     }
+    // console.log("current player: ", currentPlayer);
     // for testing...
     // console.log(currentPlayer.position);
     currentPlayer.position = player.position;

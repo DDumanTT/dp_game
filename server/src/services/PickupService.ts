@@ -16,7 +16,8 @@ export default class PickupService {
   }
 
   private constructor() {
-    for (let i = 0; i < 900; i++) {
+    const pickupCount = Math.max(config.world.width, config.world.height) / 10;
+    for (let i = 0; i < pickupCount; i++) {
       this._pickups.push({
         id: i,
         position: {
@@ -26,14 +27,24 @@ export default class PickupService {
         type: PickupType.Grow,
       });
     }
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < pickupCount / 500; i++) {
       this._pickups.push({
-        id: i + 900,
+        id: i + pickupCount,
         position: {
           x: this.generatePosition(15, config.world.width - 15),
           y: this.generatePosition(15, config.world.height - 15),
         },
         type: PickupType.Speed,
+      });
+    }
+    for (let i = 0; i < 10; i++) {
+      this._pickups.push({
+        id: i + 990,
+        position: {
+          x: this.generatePosition(15, config.world.width - 15),
+          y: this.generatePosition(15, config.world.height - 15),
+        },
+        type: PickupType.Reverse,
       });
     }
   }

@@ -10,9 +10,8 @@ import SocketCommunicator from "../services/communicators/SocketCommunicator";
 import EntityService from "../services/EntityService";
 import LevelPickerService from "../services/LevelPickerService";
 import Position from "./Position";
-import IObserver from "../core/interfaces/IObserver";
 
-export default class Player implements IEntity, IObserver<number> {
+export default class Player implements IEntity {
   protected _id: string;
   public get id(): string {
     return this._id;
@@ -27,10 +26,15 @@ export default class Player implements IEntity, IObserver<number> {
   public get size(): number {
     return this._size;
   }
+
   public set size(value: number) {
-    this._graphics.width = value * 2;
-    this._graphics.height = value * 2;
-    this._size = value;
+    const val = value.clamp(
+      0,
+      Math.min(config.world.height / 2, config.world.width / 2)
+    );
+    this._graphics.width = val * 2;
+    this._graphics.height = val * 2;
+    this._size = val;
   }
 
   protected _spawnPosition: Position;
@@ -43,6 +47,9 @@ export default class Player implements IEntity, IObserver<number> {
   }
 
   protected _gameManager: IGameManager;
+  public get gameManager(): IGameManager {
+    return this._gameManager;
+  }
 
   protected _originPosition: Position;
   protected _targetPosition: Position;

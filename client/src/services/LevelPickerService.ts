@@ -7,13 +7,14 @@ import Position from "@shared/contracts/SocketPosition";
 import config from "@shared/config";
 import IGameManager from "../core/interfaces/IGameManager";
 import { CirclePickupFactory } from "../core/Factories/AbstractFactory";
+import SecondLevel from "../levels/SecondLevel";
 
 export default class LevelPickerService implements ILevelPicker, IAutoService {
   private _gameManager: IGameManager = null!;
   public get gameManager() {
     return this._gameManager;
   }
-  private _level: ILevel;
+  private _level: ILevel = null!;
   public get level() {
     return this._level;
   }
@@ -21,12 +22,7 @@ export default class LevelPickerService implements ILevelPicker, IAutoService {
     this._level = level;
   }
 
-  public constructor() {
-    this._level = new FirstLevel(
-      this._gameManager,
-      new CirclePickupFactory(this._gameManager)
-    );
-  }
+  public constructor() {}
 
   loadLevel(app: Application) {
     this._level.load(app);
@@ -69,5 +65,14 @@ export default class LevelPickerService implements ILevelPicker, IAutoService {
 
   execute(gameManager: IGameManager): void {
     this._gameManager = gameManager;
+
+    // this._level = new FirstLevel(
+    //   this._gameManager,
+    //   new CirclePickupFactory(this._gameManager)
+    // );
+    this._level = new SecondLevel(
+      this._gameManager,
+      new CirclePickupFactory(this._gameManager)
+    );
   }
 }

@@ -14,6 +14,7 @@ import IGameManager from "../core/interfaces/IGameManager";
 import IPickup from "../core/interfaces/IPickup";
 import Game from "../core/Game";
 import GameLoopBase from "../core/base/GameLoopBase";
+import LevelPickerService from "./LevelPickerService";
 
 export default class EntityService implements IAutoService {
   private _gameManager: IGameManager = null!;
@@ -31,7 +32,7 @@ export default class EntityService implements IAutoService {
     return this._pickups;
   }
 
-  private _mainPlayer: MainPlayer = null!;
+  private _mainPlayer: MainPlayer | undefined = null!;
   public get mainPlayer() {
     return this._mainPlayer;
   }
@@ -43,23 +44,33 @@ export default class EntityService implements IAutoService {
   }
 
   public removeEntity(entity: IEntity) {
-    const entityIndex = this._entities.indexOf(entity);
-    if (entityIndex > -1) {
-      entity.destroy();
-      this._entities.splice(entityIndex, 1);
+    const game = this._gameManager.getService(Game);
+    const entitiesCount = this._entities.length;
+
+    game.removeObserver(entity);
+    this._entities = this.entities.filter((x) => x.id !== entity.id);
+
+    if (entitiesCount != this._entities.length) {
+      console.log("delete", entity.id);
+      entity.graphics.visible = false;
+      setTimeout(() => {
+        entity.destroy();
+      }, 1000);
     }
   }
 
   public spawnPlayer(player: SocketPlayer) {
     const game = this._gameManager.getService(Game);
     if (!this._mainPlayerInitialized) {
-      this._mainPlayer = new MainPlayer(
+      const regularPlayer = new Player(
         player.id,
         player.name,
         new Position(player.position.x, player.position.y),
         player.size,
         this._gameManager
       );
+
+      this._mainPlayer = new MainPlayer(regularPlayer);
 
       game.addObserver(this._mainPlayer);
       this._mainPlayerInitialized = true;
@@ -83,11 +94,11 @@ export default class EntityService implements IAutoService {
   public updatePlayers(players: Record<string, SocketPlayer>) {
     let alive = false;
     this._entities.forEach((e) => {
-      if (e.id === this._mainPlayer.id) {
-        alive = true;
-        return;
-      }
       if (players[e.id]) {
+        if (players[e.id].id === this._mainPlayer?.id) {
+          alive = true;
+          return;
+        }
         const player = players[e.id];
         e.move(player.position.x, player.position.y, player.size);
       } else {
@@ -97,7 +108,7 @@ export default class EntityService implements IAutoService {
 
     if (!alive) {
       // TODO: Allow main player to be undefined - game over state.
-      // this._mainPlayer = undefined;
+      this._mainPlayer = undefined;
       // this.removeEntity(this._mainPlayer);
     }
   }
@@ -106,7 +117,7 @@ export default class EntityService implements IAutoService {
     const game = this._gameManager.getService(Game);
 
     players.forEach((p) => {
-      if (p.id === this._mainPlayer.id) return;
+      if (p.id === this._mainPlayer?.id) return;
       const player = new Player(
         p.id,
         p.name,
@@ -120,9 +131,8 @@ export default class EntityService implements IAutoService {
   }
 
   public spawnPickups(pickups: SocketPickup[]) {
-    // THIS IS SCUFFED AND TEMPORARY // TODO: MOVE FACTORY INTO LevelBase
-    const factory = new CirclePickupFactory(this._gameManager);
-    // --------------------------------------
+    const levelPicker = this._gameManager.getService(LevelPickerService);
+    const factory = levelPicker.level.pickupFactory;
     pickups.forEach((p) => {
       this._pickups.push(
         factory.createPickupEntity(
@@ -141,7 +151,8 @@ export default class EntityService implements IAutoService {
   }
 
   public updatePickup(pickup: SocketPickup) {
-    const factory = new SquarePickupFactory(this._gameManager);
+    const levelPicker = this._gameManager.getService(LevelPickerService);
+    const factory = levelPicker.level.pickupFactory;
     this._pickups[pickup.id].destroy();
     this._pickups[pickup.id] = factory.createPickupEntity(
       pickup.id,

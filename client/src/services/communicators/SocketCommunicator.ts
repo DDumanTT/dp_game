@@ -19,6 +19,7 @@ import SocketPosition from "@shared/contracts/SocketPosition";
 import IGameManager from "../../core/interfaces/IGameManager";
 import EntityService from "../EntityService";
 import Player from "../../components/Player";
+import IEntity from "../../core/interfaces/IEntity";
 
 export default class SocketCommunicator extends CommunicatorBase {
   private _socket: Socket = socketIO(this.uri, { query: { name: this.name } });
@@ -56,7 +57,7 @@ export default class SocketCommunicator extends CommunicatorBase {
     });
   }
 
-  public sendPlayerPosition(player: Player) {
+  public sendPlayerPosition(player: IEntity) {
     const socketPlayer = new SocketPlayer();
     socketPlayer.id = player.id;
     socketPlayer.name = player.name;

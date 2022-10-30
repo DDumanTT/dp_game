@@ -4,7 +4,11 @@ import {
   CirclePickupType,
   SquarePickupType,
 } from "../interfaces/IEntityFactory";
-import { GrowPickup, SpeedPickup } from "../../components/Pickup";
+import {
+  GrowPickup,
+  ReversePickup,
+  SpeedPickup,
+} from "../../components/Pickup";
 import IGameManager from "../interfaces/IGameManager";
 import Position from "../../components/Position";
 import IPickup from "../interfaces/IPickup";
@@ -48,8 +52,16 @@ export class CirclePickupFactory extends PickupFactory {
           this._gameManager
         );
       case PickupType.Speed:
-        const lineStyle: ILineStyleOptions = { width: 5, color: 0x000000 };
+        var lineStyle: ILineStyleOptions = { width: 5, color: 0x000000 };
         return new SpeedPickup(
+          id,
+          spawnPosition,
+          this.draw(spawnPosition, lineStyle),
+          this._gameManager
+        );
+      case PickupType.Reverse:
+        var lineStyle: ILineStyleOptions = { width: 5, color: 0x000000 };
+        return new ReversePickup(
           id,
           spawnPosition,
           this.draw(spawnPosition, lineStyle),
@@ -86,8 +98,16 @@ export class SquarePickupFactory extends PickupFactory {
           this._gameManager
         );
       case PickupType.Speed:
-        const lineStyle: ILineStyleOptions = { width: 5, color: 0x000000 };
+        var lineStyle: ILineStyleOptions = { width: 5, color: 0x000000 };
         return new SpeedPickup(
+          id,
+          spawnPosition,
+          this.draw(spawnPosition, lineStyle),
+          this._gameManager
+        );
+      case PickupType.Reverse:
+        var lineStyle: ILineStyleOptions = { width: 5, color: 0x000000 };
+        return new ReversePickup(
           id,
           spawnPosition,
           this.draw(spawnPosition, lineStyle),
