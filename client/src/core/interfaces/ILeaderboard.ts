@@ -1,3 +1,5 @@
+import ILeaderboardUser from "./ILeaderboardUser";
+
 export default interface ILeaderBoard {
-  scores: number[];
+  players(): Array<ILeaderboardUser>;
 }

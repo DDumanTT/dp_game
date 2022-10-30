@@ -8,6 +8,7 @@ import Game from "./core/Game";
 import SocketCommunicator from "./services/communicators/SocketCommunicator";
 import LevelPickerService from "./services/LevelPickerService";
 import EntityService from "./services/EntityService";
+import LeaderboardService from "./services/LeaderboardService";
 
 function hideMenu() {
   const menu = document.getElementById("menu");
@@ -41,6 +42,7 @@ function startGame(playerName: string) {
   gameManagerBuilder.addService(Game);
   gameManagerBuilder.addAutoService(new LevelPickerService());
   gameManagerBuilder.addAutoService(new EntityService());
+  gameManagerBuilder.addAutoService(new LeaderboardService());
 
   const gameManager = gameManagerBuilder.build();
   const game = gameManager.getService(Game);

@@ -24,6 +24,11 @@ body {
   height: 100%;
 }
 
+.leaderboard {
+  position: absolute;
+  color: aqua;
+}
+
 input {
   font-size: 3rem;
   background-color: transparent;
