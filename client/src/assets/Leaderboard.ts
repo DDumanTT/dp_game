@@ -22,6 +22,5 @@ export default function LeaderBoardStyle(
     })
     .join("");
 
-  return `
-  ${div("Leaderboard:" + div(ul(scoresWithUsernames)))}`;
+  return `${div("Leaderboard:" + div(ul(scoresWithUsernames)))}`;
 }
