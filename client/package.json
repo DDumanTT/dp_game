@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "@dp_game/client",
   "source": "src/index.html",
   "scripts": {
     "start": "vite",

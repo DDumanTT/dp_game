@@ -1,5 +1,10 @@
 {
   "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationMap": true,
     "composite": true
   }
 }

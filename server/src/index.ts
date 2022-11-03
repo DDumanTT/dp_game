@@ -70,3 +70,4 @@ setInterval(() => {
 }, config.performance.refreshTime);
 
 console.log("Server started");
+console.log(process.env);

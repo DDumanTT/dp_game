@@ -15,16 +15,16 @@ export default class PlayerDecorator {
   }
 }
 
-abstract class PPlayerDecorator implements IEntity {
-  abstract get id(): string;
-  abstract get graphics(): Graphics;
-  abstract get size(): number;
-  abstract destroy(): void;
-  abstract move(x: number, y: number, size: number): void;
-  abstract update(delta: number): void;
-}
+// abstract class PPlayerDecorator implements IEntity {
+//   abstract get id(): string;
+//   abstract get graphics(): Graphics;
+//   abstract get size(): number;
+//   abstract destroy(): void;
+//   abstract move(x: number, y: number, size: number): void;
+//   abstract update(delta: number): void;
+// }
 
-class MainPlayerDecorator extends PPlayerDecorator {}
+// class MainPlayerDecorator extends PPlayerDecorator {}
 
 // FAILED EXAMPLE
 //
