@@ -23,7 +23,11 @@ import IEntity from "../../core/interfaces/IEntity";
 
 export default class SocketCommunicator extends CommunicatorBase {
   private _socket: Socket = socketIO(
-    import.meta.env.DEV ? this.uri : import.meta.env.VITE_SERVER_URL,
+    import.meta.env.DEV
+      ? this.uri
+      : `${import.meta.env.VITE_SERVER_URL}:${
+          import.meta.env.VITE_SOCKETS_PORT
+        }`,
     { query: { name: this.name } }
   );
 
