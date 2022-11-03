@@ -22,7 +22,10 @@ import Player from "../../components/Player";
 import IEntity from "../../core/interfaces/IEntity";
 
 export default class SocketCommunicator extends CommunicatorBase {
-  private _socket: Socket = socketIO(this.uri, { query: { name: this.name } });
+  private _socket: Socket = socketIO(
+    import.meta.env.DEV ? this.uri : import.meta.env.VITE_SERVER_URL,
+    { query: { name: this.name } }
+  );
 
   private _players: SocketPlayer[] = [];
   public get players(): SocketPlayer[] {
