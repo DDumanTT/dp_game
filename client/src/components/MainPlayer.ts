@@ -10,6 +10,7 @@ import EntityService from "../services/EntityService";
 import LevelPickerService from "../services/LevelPickerService";
 import Player from "./Player";
 import Position from "./Position";
+import PickUpBridge from './../core/bridge/PickupAbstraction';
 
 export default class MainPlayer implements IEntity {
   private _mousePosition: Position = new Position(0, 0);
@@ -135,8 +136,12 @@ export default class MainPlayer implements IEntity {
         Math.sqrt((x - pX) ** 2 + (y - pY) ** 2) < this._player.size &&
         p.id >= 0
       ) {
-        p.activate(this);
-        p.destroy();
+        var bridge: PickUpBridge = new PickUpBridge(p);
+        bridge.activate(this);
+        bridge.destroy();
+        // Commented cuz using bridge...
+        // p.activate(this);
+        // p.destroy();
       }
     });
   }
