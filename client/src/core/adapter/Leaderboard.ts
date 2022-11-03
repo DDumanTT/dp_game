@@ -1,7 +1,7 @@
-import ILeaderBoard from "../interfaces/ILeaderBoard";
+import ILeaderboard from "../interfaces/ILeaderboard";
 import ILeaderboardUser from "../interfaces/ILeaderboardUser";
 
-export default class Leaderboard implements ILeaderBoard {
+export default class Leaderboard implements ILeaderboard {
   private _leaderboardPlayers: Array<ILeaderboardUser>;
 
   constructor(leaderboardPlayers: Array<ILeaderboardUser>) {
