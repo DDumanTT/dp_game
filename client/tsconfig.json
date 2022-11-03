@@ -10,7 +10,7 @@
       "resolveJsonModule": true,
       "isolatedModules": true,
       "esModuleInterop": true,
-      "noEmit": true,
+      // "noEmit": true,
       "noUnusedLocals": false,
       "noUnusedParameters": false,
       "noImplicitReturns": true,
@@ -22,5 +22,5 @@
       }
     },
     "include": ["src"],
-    "references": [{ "path": "../shared" }]
+    "references": [{ "path": "../shared" }, { "path": "./tsconfig.node.json" }]
   }
