@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "dev": "nodemon -L"
   },
   "keywords": [],
@@ -17,7 +17,8 @@
     "tsconfig-paths": "^4.1.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "tsc-alias": "^1.7.0"
   },
   "nodemonConfig": {
     "watch": [
