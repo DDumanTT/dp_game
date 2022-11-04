@@ -12,6 +12,13 @@ body {
   color: white;
   font-size: 3rem;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  /* margin-inline: 1000px; */
+}
+
+marquee {
+  width: 580px;
 }
 
 .center {

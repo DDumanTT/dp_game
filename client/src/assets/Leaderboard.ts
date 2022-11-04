@@ -9,7 +9,7 @@ function ul(payload: string): string {
 }
 
 function li(payload: string): string {
-  return `<li>${payload}</li>`;
+  return `${payload}<br/>`;
 }
 
 export default function LeaderBoardStyle(

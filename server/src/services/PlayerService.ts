@@ -22,9 +22,10 @@ export default class PlayerService {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  public spawnPlayer(socketId: string, name: string) {
+  public spawnPlayer(socketId: string, name: string, color: number) {
     let player: SocketPlayer = {
       name,
+      color,
       id: socketId,
       size: 50,
       position: {

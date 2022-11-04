@@ -28,7 +28,7 @@ export default class SocketCommunicator extends CommunicatorBase {
       : `${import.meta.env.VITE_SERVER_URL}:${
           import.meta.env.VITE_SOCKETS_PORT
         }`,
-    { query: { name: this.name } }
+    { query: { name: this.name, color: this.color } }
   );
 
   private _players: SocketPlayer[] = [];
@@ -68,6 +68,7 @@ export default class SocketCommunicator extends CommunicatorBase {
     const socketPlayer = new SocketPlayer();
     socketPlayer.id = player.id;
     socketPlayer.name = player.name;
+    socketPlayer.color = player.color;
     socketPlayer.size = player.size;
     socketPlayer.position = new SocketPosition();
     socketPlayer.position.x = player.targetPosition.x;

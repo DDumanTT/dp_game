@@ -1,8 +1,3 @@
-import {
-  CirclePickupFactory,
-  SquarePickupFactory,
-} from "./../core/Factories/AbstractFactory";
-import PickupType from "@shared/constants/PickupType";
 import SocketPickup from "@shared/contracts/SocketPickup";
 import SocketPlayer from "@shared/contracts/SocketPlayer";
 import MainPlayer from "../components/MainPlayer";
@@ -13,7 +8,6 @@ import IEntity from "../core/interfaces/IEntity";
 import IGameManager from "../core/interfaces/IGameManager";
 import IPickup from "../core/interfaces/IPickup";
 import Game from "../core/Game";
-import GameLoopBase from "../core/base/GameLoopBase";
 import LevelPickerService from "./LevelPickerService";
 
 export default class EntityService implements IAutoService {
@@ -65,6 +59,7 @@ export default class EntityService implements IAutoService {
       const regularPlayer = new Player(
         player.id,
         player.name,
+        player.color,
         new Position(player.position.x, player.position.y),
         player.size,
         this._gameManager
@@ -81,6 +76,7 @@ export default class EntityService implements IAutoService {
     const _player = new Player(
       player.id,
       player.name,
+      player.color,
       new Position(player.position.x, player.position.y),
       player.size,
       this._gameManager
@@ -107,9 +103,7 @@ export default class EntityService implements IAutoService {
     });
 
     if (!alive) {
-      // TODO: Allow main player to be undefined - game over state.
       this._mainPlayer = undefined;
-      // this.removeEntity(this._mainPlayer);
     }
   }
 
@@ -121,6 +115,7 @@ export default class EntityService implements IAutoService {
       const player = new Player(
         p.id,
         p.name,
+        p.color,
         new Position(p.position.x, p.position.y),
         p.size,
         this._gameManager
@@ -163,13 +158,5 @@ export default class EntityService implements IAutoService {
 
   execute(gameManager: IGameManager): void {
     this._gameManager = gameManager;
-
-    // this._mainPlayer = new MainPlayer(
-    //   "",
-    //   "",
-    //   new Position(config.world.width / 2, config.world.height / 2),
-    //   this._gameManager,
-    //   new Graphics()
-    // );
   }
 }

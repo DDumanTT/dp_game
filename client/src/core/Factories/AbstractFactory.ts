@@ -52,7 +52,7 @@ export class CirclePickupFactory extends PickupFactory {
           this._gameManager
         );
       case PickupType.Speed:
-        var lineStyle: ILineStyleOptions = { width: 5, color: 0x000000 };
+        var lineStyle: ILineStyleOptions = { width: 5, color: 0xffffff };
         return new SpeedPickup(
           id,
           spawnPosition,
@@ -60,7 +60,7 @@ export class CirclePickupFactory extends PickupFactory {
           this._gameManager
         );
       case PickupType.Reverse:
-        var lineStyle: ILineStyleOptions = { width: 5, color: 0x000000 };
+        var lineStyle: ILineStyleOptions = { width: 5, color: 0xffffff };
         return new ReversePickup(
           id,
           spawnPosition,
@@ -98,7 +98,7 @@ export class SquarePickupFactory extends PickupFactory {
           this._gameManager
         );
       case PickupType.Speed:
-        var lineStyle: ILineStyleOptions = { width: 5, color: 0x000000 };
+        var lineStyle: ILineStyleOptions = { width: 5, color: 0xffffff };
         return new SpeedPickup(
           id,
           spawnPosition,
@@ -106,7 +106,7 @@ export class SquarePickupFactory extends PickupFactory {
           this._gameManager
         );
       case PickupType.Reverse:
-        var lineStyle: ILineStyleOptions = { width: 5, color: 0x000000 };
+        var lineStyle: ILineStyleOptions = { width: 5, color: 0xffffff };
         return new ReversePickup(
           id,
           spawnPosition,

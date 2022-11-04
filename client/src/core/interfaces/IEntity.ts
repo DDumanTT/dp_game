@@ -7,6 +7,8 @@ export default interface IEntity extends IObserver<number> {
   set size(value: number);
   get gameManager(): IGameManager;
   get name(): string;
+  get color(): number;
+  set color(value: number);
   get targetPosition(): Position;
   get id(): string;
   get graphics(): Graphics;

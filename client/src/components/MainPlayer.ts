@@ -8,25 +8,35 @@ import RegularMovementStrategy from "../core/strategies/RegularMovementStrategy"
 import SocketCommunicator from "../services/communicators/SocketCommunicator";
 import EntityService from "../services/EntityService";
 import LevelPickerService from "../services/LevelPickerService";
-import Player from "./Player";
 import Position from "./Position";
-import PickUpBridge from './../core/bridge/PickupAbstraction';
+import PickUpBridge from "./../core/bridge/PickupAbstraction";
+import ConsumeCommand from "../core/commands/ConsumeCommand";
+import ICommand from "../core/interfaces/ICommand";
+import MoveMainCommand from "../core/commands/MoveMainCommand";
 
 export default class MainPlayer implements IEntity {
   private _mousePosition: Position = new Position(0, 0);
   private _speed: number = 5;
   private _player: IEntity;
 
+  private _consumeCommand: ICommand = new ConsumeCommand(this);
+  private _moveCommand: ICommand = new MoveMainCommand(this);
+
   constructor(player: IEntity) {
     this._player = player;
   }
+  get color(): number {
+    return this._player.color;
+  }
+  set color(value: number) {
+    this._player.color = value;
+  }
   get name(): string {
-    return this._player.name;
+    return "(YOU) " + this._player.name;
   }
   set size(value: number) {
     this._player.size = value;
   }
-
   get gameManager(): IGameManager {
     return this._player.gameManager;
   }
@@ -91,19 +101,20 @@ export default class MainPlayer implements IEntity {
     }
   }
 
-  public move(x: number, y: number): [x: number, y: number] {
-    const [newX, newY] = this._movementStrategy.move(
-      this._player.graphics.position.x,
-      this._player.graphics.position.y,
-      x,
-      y
-    );
-    this._player.graphics.position.x = newX;
-    this._player.graphics.position.y = newY;
-    this._player.targetPosition.set(newX, newY);
-    const socket = this._player.gameManager.getService(SocketCommunicator);
-    socket.sendPlayerPosition(this);
-    return [newX, newY];
+  public move(x: number, y: number) {
+    // const [newX, newY] = this._movementStrategy.move(
+    //   this._player.graphics.position.x,
+    //   this._player.graphics.position.y,
+    //   x,
+    //   y
+    // );
+    // this._player.graphics.position.x = newX;
+    // this._player.graphics.position.y = newY;
+    // this._player.targetPosition.set(newX, newY);
+    // const socket = this._player.gameManager.getService(SocketCommunicator);
+    // socket.sendPlayerPosition(this);
+    // return [newX, newY];
+    this._moveCommand.execute(x, y);
   }
 
   private _spedUp = false;
@@ -159,11 +170,7 @@ export default class MainPlayer implements IEntity {
   }
 
   private consume(player: IEntity) {
-    this._player.size += player.size;
-    const entityService = this._player.gameManager.getService(EntityService);
-    entityService.removeEntity(player);
-    const socket = this._player.gameManager.getService(SocketCommunicator);
-    socket.removePlayer(player.id);
+    this._consumeCommand.execute(player);
   }
 
   public update(delta: number): void {

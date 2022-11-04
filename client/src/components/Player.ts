@@ -1,13 +1,9 @@
 import config from "@shared/config";
-import SocketPlayer from "@shared/contracts/SocketPlayer";
-import { Container, Graphics, Text } from "pixi.js";
+import { Graphics, Text } from "pixi.js";
+import MoveCommand from "../core/commands/MoveCommand";
+import ICommand from "../core/interfaces/ICommand";
 import IEntity from "../core/interfaces/IEntity";
 import IGameManager from "../core/interfaces/IGameManager";
-import IMovementStrategy from "../core/interfaces/IMovementStrategy";
-import InvertedMovementStrategy from "../core/strategies/InvertedMovementStrategy";
-import RegularMovementStrategy from "../core/strategies/RegularMovementStrategy";
-import SocketCommunicator from "../services/communicators/SocketCommunicator";
-import EntityService from "../services/EntityService";
 import LevelPickerService from "../services/LevelPickerService";
 import Position from "./Position";
 
@@ -20,6 +16,15 @@ export default class Player implements IEntity {
   protected _name: string;
   public get name(): string {
     return this._name;
+  }
+
+  protected _color: number;
+  public get color(): number {
+    return this._color;
+  }
+
+  public set color(value: number) {
+    this._color = value;
   }
 
   protected _size: number;
@@ -52,13 +57,20 @@ export default class Player implements IEntity {
   }
 
   protected _originPosition: Position;
+  public get originPosition() {
+    return this._originPosition;
+  }
   protected _targetPosition: Position;
   public get targetPosition() {
     return this._targetPosition;
   }
+
+  private moveCommand: ICommand = new MoveCommand(this);
+
   constructor(
     id: string,
     name: string,
+    color: number,
     spawnPosition: Position,
     size: number,
     gameManager: IGameManager,
@@ -66,6 +78,7 @@ export default class Player implements IEntity {
   ) {
     this._id = id;
     this._name = name;
+    this._color = color;
     this._size = size;
     this._spawnPosition = spawnPosition;
     this._originPosition = new Position(spawnPosition.x, spawnPosition.y);
@@ -101,8 +114,8 @@ export default class Player implements IEntity {
   protected drawPlayer() {
     const levelPicker = this._gameManager.getService(LevelPickerService);
     const obj = new Graphics();
-    const color = Math.floor(Math.random() * 0xffffff);
-    obj.beginFill(color);
+    // const color = Math.floor(Math.random() * 0xffffff);
+    obj.beginFill(this.color);
     obj.drawCircle(0, 0, 50);
     obj.width = this._size * 2;
     obj.height = this._size * 2;
@@ -126,13 +139,10 @@ export default class Player implements IEntity {
   }
 
   public move(x: number, y: number, size: number) {
-    this._msElapsed = 0;
-    this._originPosition.set(this._targetPosition.x, this._targetPosition.y);
-    // this._graphics.position.x = newX;
-    // this._graphics.position.y = newY;
-    this._targetPosition.set(x, y);
-    this.size = size;
-    // const socket = this._gameManager.getService(SocketCommunicator);
-    // socket.sendPlayerPosition(this);
+    // this._msElapsed = 0;
+    // this._originPosition.set(this._targetPosition.x, this._targetPosition.y);
+    // this._targetPosition.set(x, y);
+    // this.size = size;
+    this.moveCommand.execute(x, y, size);
   }
 }

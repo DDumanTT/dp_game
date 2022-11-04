@@ -34,6 +34,7 @@ const pickupService = PickupService.getInstance();
 // Gets only connected player
 io.on("connection", (socket) => {
   const playerName = socket.handshake.query.name;
+  const playerColor = socket.handshake.query.color;
   console.log(`connected: ${socket.id}, name: ${playerName}`);
   socket.on("disconnect", () => {
     playerService.removePlayerById(socket.id);
@@ -48,7 +49,11 @@ io.on("connection", (socket) => {
   );
 
   // Emits new player to others
-  const spawnedPlayer = playerService.spawnPlayer(socket.id, playerName);
+  const spawnedPlayer = playerService.spawnPlayer(
+    socket.id,
+    playerName,
+    playerColor
+  );
   socket.emit(SOCKET_SPAWN_PLAYER, spawnedPlayer);
   socket.broadcast.emit(SOCKET_SPAWN_PLAYER, spawnedPlayer);
 
