@@ -6,8 +6,9 @@ import IEntity from "../core/interfaces/IEntity";
 import IGameManager from "../core/interfaces/IGameManager";
 import LevelPickerService from "../services/LevelPickerService";
 import Position from "./Position";
+import IObserver from "../core/interfaces/IObserver";
 
-export default class Player implements IEntity {
+export default class Player implements IEntity, IObserver<number> {
   protected _id: string;
   public get id(): string {
     return this._id;
@@ -102,7 +103,13 @@ export default class Player implements IEntity {
     );
   }
 
-  private _msElapsed = 0;
+  protected _msElapsed = 0;
+  get msElapsed() {
+    return this._msElapsed;
+  }
+  set msElapsed(value: number) {
+    this._msElapsed = value;
+  }
 
   update(delta: number): void {
     this._msElapsed += this._gameManager.app.ticker.elapsedMS;
@@ -114,7 +121,6 @@ export default class Player implements IEntity {
   protected drawPlayer() {
     const levelPicker = this._gameManager.getService(LevelPickerService);
     const obj = new Graphics();
-    // const color = Math.floor(Math.random() * 0xffffff);
     obj.beginFill(this.color);
     obj.drawCircle(0, 0, 50);
     obj.width = this._size * 2;
@@ -139,10 +145,6 @@ export default class Player implements IEntity {
   }
 
   public move(x: number, y: number, size: number) {
-    // this._msElapsed = 0;
-    // this._originPosition.set(this._targetPosition.x, this._targetPosition.y);
-    // this._targetPosition.set(x, y);
-    // this.size = size;
     this.moveCommand.execute(x, y, size);
   }
 }

@@ -8,14 +8,13 @@ import IEntity from "../interfaces/IEntity";
 
 export default class MoveCommand implements ICommand {
   private _player: Player;
-  private _msElapsed = 0;
 
   constructor(player: Player) {
     this._player = player;
   }
 
   execute(x: number, y: number, size: number) {
-    this._msElapsed = 0;
+    this._player.msElapsed = 0;
     this._player.originPosition.set(
       this._player.targetPosition.x,
       this._player.targetPosition.y

@@ -1,9 +1,8 @@
 import { Graphics } from "pixi.js";
 import Position from "../../components/Position";
 import IGameManager from "./IGameManager";
-import IObserver from "./IObserver";
 
-export default interface IEntity extends IObserver<number> {
+export default interface IEntity {
   set size(value: number);
   get gameManager(): IGameManager;
   get name(): string;
