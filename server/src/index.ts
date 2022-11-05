@@ -24,8 +24,8 @@ import PlayerService from "./services/PlayerService";
 const io = new sockets.Server(server, { cors: { origin: "*" } });
 
 // if (NODE_ENV == "production") {
-app.use(express.static("public"));
-app.get("/", (req, res) => res.sendFile("./index.html"));
+// app.use(express.static("public"));
+// app.get("/", (req, res) => res.sendFile("./index.html"));
 // }
 
 const playerService = PlayerService.getInstance();

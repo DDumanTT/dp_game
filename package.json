@@ -3,7 +3,7 @@
   "scripts": {
     "build": "npm run build -ws",
     "start:server": "ts-node -r tsconfig-paths/register server/src/index.ts",
-    "start:client": "npx http-server client/dist/ --cors -a 0.0.0.0 -p $PORT"
+    "start:client": "npx http-server client/dist/ --cors -a 0.0.0.0 -p 3001"
   },
   "devDependencies": {
     "ts-node": "^10.9.1",
