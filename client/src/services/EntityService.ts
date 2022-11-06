@@ -9,6 +9,8 @@ import IGameManager from "../core/interfaces/IGameManager";
 import IPickup from "../core/interfaces/IPickup";
 import Game from "../core/Game";
 import LevelPickerService from "./LevelPickerService";
+import PickupType from "@shared/constants/PickupType";
+import { IPickupFactory } from "./../core/Factories/AbstractFactory";
 
 export default class EntityService implements IAutoService {
   private _gameManager: IGameManager = null!;
@@ -125,17 +127,36 @@ export default class EntityService implements IAutoService {
     });
   }
 
+  private pickupSwitch(pickup: SocketPickup, factory: IPickupFactory) {
+    let newPickup: IPickup;
+    switch (pickup.type) {
+      case PickupType.Grow:
+        newPickup = factory.createGrowPickup(
+          pickup.id,
+          new Position(pickup.position.x, pickup.position.y)
+        );
+        break;
+      case PickupType.Speed:
+        newPickup = factory.createSpeedPickup(
+          pickup.id,
+          new Position(pickup.position.x, pickup.position.y)
+        );
+      case PickupType.Reverse:
+        newPickup = factory.createReversePickup(
+          pickup.id,
+          new Position(pickup.position.x, pickup.position.y)
+        );
+      default:
+        throw new Error("Invalid pickup type.");
+    }
+    return newPickup;
+  }
+
   public spawnPickups(pickups: SocketPickup[]) {
     const levelPicker = this._gameManager.getService(LevelPickerService);
     const factory = levelPicker.level.pickupFactory;
     pickups.forEach((p) => {
-      this._pickups.push(
-        factory.createPickupEntity(
-          p.id,
-          new Position(p.position.x, p.position.y),
-          p.type
-        )
-      );
+      this._pickups.push(this.pickupSwitch(p, factory));
     });
   }
 
@@ -149,11 +170,7 @@ export default class EntityService implements IAutoService {
     const levelPicker = this._gameManager.getService(LevelPickerService);
     const factory = levelPicker.level.pickupFactory;
     this._pickups[pickup.id].destroy();
-    this._pickups[pickup.id] = factory.createPickupEntity(
-      pickup.id,
-      new Position(pickup.position.x, pickup.position.y),
-      pickup.type
-    );
+    this._pickups[pickup.id] = this.pickupSwitch(pickup, factory);
   }
 
   execute(gameManager: IGameManager): void {

@@ -15,7 +15,6 @@ class Position implements IPrototype<Position> {
       this.x = x;
       this.y = y;
     } else {
-      console.log("nigga error", x, y);
       throw new Error("Position must contain x and y values.");
     }
   }
