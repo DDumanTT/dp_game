@@ -27,7 +27,7 @@ export default class PickupService {
         type: PickupType.Grow,
       });
     }
-    for (let i = 0; i < pickupCount / 500; i++) {
+    for (let i = 0; i < pickupCount / 100; i++) {
       this._pickups.push({
         id: i + pickupCount,
         position: {

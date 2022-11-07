@@ -141,11 +141,13 @@ export default class EntityService implements IAutoService {
           pickup.id,
           new Position(pickup.position.x, pickup.position.y)
         );
+        break;
       case PickupType.Reverse:
         newPickup = factory.createReversePickup(
           pickup.id,
           new Position(pickup.position.x, pickup.position.y)
         );
+        break;
       default:
         throw new Error("Invalid pickup type.");
     }
