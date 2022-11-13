@@ -20,8 +20,8 @@ export default class MainPlayer implements IEntity, IObserver<number> {
   private _speed: number = 5;
   private _player: IEntity;
 
-  private _consumeCommand: ICommand = new ConsumeCommand(this);
-  private _moveCommand: ICommand = new MoveMainCommand(this);
+  public _consumeCommand: ICommand = new ConsumeCommand(this);
+  public _moveCommand: ICommand = new MoveMainCommand(this);
 
   constructor(player: IEntity) {
     this._player = player;

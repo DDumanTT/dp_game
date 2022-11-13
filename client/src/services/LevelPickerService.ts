@@ -66,7 +66,7 @@ export default class LevelPickerService implements ILevelPicker, IAutoService {
   execute(gameManager: IGameManager): void {
     this._gameManager = gameManager;
 
-    // this._level = new FirstLevel(
+    // this._level = `new FirstLevel(
     //   this._gameManager,
     //   new CirclePickupFactory(this._gameManager)
     // );

@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "build": "tsc && tsc-alias",
-    "dev": "nodemon -L"
+    "dev": "nodemon -L",
+    "test": "vitest"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +19,8 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.20",
-    "tsc-alias": "^1.7.0"
+    "tsc-alias": "^1.7.0",
+    "vitest": "^0.25.1"
   },
   "nodemonConfig": {
     "watch": [

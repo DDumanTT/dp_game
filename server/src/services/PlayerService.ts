@@ -3,12 +3,14 @@ import Position from "@shared/contracts/SocketPosition";
 import config from "@shared/config";
 
 export default class PlayerService {
-  private static _playersService = new PlayerService();
+  private static _playersService: PlayerService;
   private _players: SocketPlayer[] = [];
 
   private constructor() {}
 
   public static getInstance() {
+    if (!this._playersService) this._playersService = new PlayerService();
+
     return PlayerService._playersService;
   }
 

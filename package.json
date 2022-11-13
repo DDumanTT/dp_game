@@ -3,16 +3,22 @@
   "scripts": {
     "build": "npm run build -ws",
     "start:server": "ts-node -r tsconfig-paths/register server/src/index.ts",
-    "start:client": "npx http-server client/dist/ --cors -a 0.0.0.0 -p 3001"
+    "start:client": "npx http-server client/dist/ --cors -a 0.0.0.0 -p 3001",
+    "test": "npm run test -ws"
   },
   "devDependencies": {
+    "jsdom": "^20.0.2",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.0",
-    "typescript": "^4.8.3"
+    "typescript": "^4.8.3",
+    "vitest-mock-extended": "^1.0.7"
   },
   "workspaces": [
     "shared",
     "server",
     "client"
-  ]
+  ],
+  "dependencies": {
+    "pixi.js-legacy": "^7.0.4"
+  }
 }
