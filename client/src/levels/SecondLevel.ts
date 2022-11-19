@@ -11,6 +11,7 @@ export default class SecondLevel extends LevelBase {
   }
 
   loadSprites(loader: Loader, resources: Dict<LoaderResource>): void {
+    console.log("first");
     this.spriteCache[groundImage] = new TilingSprite(
       resources[groundImage].texture!,
       config.world.width,

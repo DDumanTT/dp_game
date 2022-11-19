@@ -16,7 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@shared/*": ["shared/*"]
-    }
+    },
   },
   "references": [
     {
@@ -29,5 +29,6 @@
       "path": "./server"
     }
   ],
-  "files": []
+  "files": [],
+  "include": ["./test/**/*"]
 }

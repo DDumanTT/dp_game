@@ -5,10 +5,10 @@ import { defineConfig } from "vite";
 export default defineConfig({
   resolve: {
     alias: {
-      "@shared": path.resolve(__dirname, "../shared"),
+      "@shared": path.resolve(__dirname, "."),
     },
   },
   test: {
-    exclude: ["node_modules", "dist", ".idea", ".git", ".cache"],
+    environment: "jsdom",
   },
 });

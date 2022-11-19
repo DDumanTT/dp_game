@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc && tsc-alias",
     "dev": "nodemon -L",
-    "test": "vitest"
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +21,8 @@
   "devDependencies": {
     "nodemon": "^2.0.20",
     "tsc-alias": "^1.7.0",
-    "vitest": "^0.25.1"
+    "vitest": "^0.25.1",
+    "jsdom": "^20.0.2"
   },
   "nodemonConfig": {
     "watch": [

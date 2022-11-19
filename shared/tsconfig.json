@@ -3,8 +3,15 @@
     "target": "es6",
     "module": "commonjs",
     "outDir": "./dist",
+    "rootDir": ".",
+    "esModuleInterop": true,
     "declaration": true,
     "declarationMap": true,
-    "composite": true
-  }
+    "composite": true,
+    "paths": {
+      "@shared/*": ["./*"]
+    }
+  },
+  "include": ["./**/*", "test/**/*"],
+  "references": [{ "path": "../server" }, { "path": "../client" }]
 }

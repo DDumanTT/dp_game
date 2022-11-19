@@ -5,13 +5,15 @@
     "start": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@types/node": "^18.11.0",
     "prettier": "2.7.1",
     "vite": "^3.1.0",
-    "vitest": "^0.25.1"
+    "vitest": "^0.25.1",
+    "jsdom": "^20.0.2"
   },
   "dependencies": {
     "pixi.js": "^6.5.4",

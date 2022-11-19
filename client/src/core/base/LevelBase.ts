@@ -40,6 +40,7 @@ export default abstract class LevelBase implements ILevel {
     this.loader.load(this.loadSprites.bind(this));
     this.loader.onComplete.add(() => app.stage.addChild(this.container), this);
     this.loader.onComplete.add(this.addToContainer, this);
+    console.log(import.meta);
   }
 
   public abstract addToContainer(): void;
