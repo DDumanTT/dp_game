@@ -11,6 +11,7 @@ import Game from "../core/Game";
 import LevelPickerService from "./LevelPickerService";
 import PickupType from "@shared/constants/PickupType";
 import { IPickupFactory } from "./../core/Factories/AbstractFactory";
+import PickupList from "../core/iterators/PickupList";
 
 export default class EntityService implements IAutoService {
   private _gameManager: IGameManager = null!;
@@ -154,12 +155,15 @@ export default class EntityService implements IAutoService {
     return newPickup;
   }
 
-  public spawnPickups(pickups: SocketPickup[]) {
+  public spawnPickups(pickups: PickupList) {
     const levelPicker = this._gameManager.getService(LevelPickerService);
     const factory = levelPicker.level.pickupFactory;
-    pickups.forEach((p) => {
-      this._pickups.push(this.pickupSwitch(p, factory));
-    });
+
+    const enumerator = pickups.getEnumerator();
+
+    while(enumerator.moveNext()) {
+      this._pickups.push(this.pickupSwitch(enumerator.current!, factory));
+    }
   }
 
   public removePickup(pickup: IPickup) {

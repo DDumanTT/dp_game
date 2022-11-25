@@ -7,6 +7,9 @@ import IGameManager from "../core/interfaces/IGameManager";
 import LevelPickerService from "../services/LevelPickerService";
 import Position from "./Position";
 import IObserver from "../core/interfaces/IObserver";
+import IEnumerable from "../core/interfaces/IEnumerable";
+import IEnumerator from "../core/interfaces/IEnumerator";
+import PlayerEnumerator from "../core/iterators/PickupEnumerator";
 
 export default class Player implements IEntity, IObserver<number> {
   protected _id: string;

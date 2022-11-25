@@ -31,10 +31,23 @@ marquee {
   height: 100%;
 }
 
+.flexbox{
+  position: relative;
+  display:flex;
+}
+
 .leaderboard {
   position: absolute;
   color: aqua;
 }
+
+.distance-players {
+  position: absolute;
+  color: greenyellow;
+  right:0;
+}
+
+
 
 input {
   font-size: 3rem;

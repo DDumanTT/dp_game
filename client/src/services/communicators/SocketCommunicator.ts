@@ -20,6 +20,7 @@ import IGameManager from "../../core/interfaces/IGameManager";
 import EntityService from "../EntityService";
 import Player from "../../components/Player";
 import IEntity from "../../core/interfaces/IEntity";
+import PickupList from "../../core/iterators/PickupList";
 
 export default class SocketCommunicator extends CommunicatorBase {
   private _socket: Socket = socketIO(
@@ -95,7 +96,13 @@ export default class SocketCommunicator extends CommunicatorBase {
 
   private getPickups(pickups: SocketPickup[]) {
     const entityService = this.gameManager.getService(EntityService);
-    entityService.spawnPickups(pickups);
+
+    const pickupList = new PickupList();
+    pickups.forEach(pp => {
+      pickupList.add(pp);
+    });
+
+    entityService.spawnPickups(pickupList);
   }
 
   private updatePickup(pickup: SocketPickup) {

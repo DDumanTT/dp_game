@@ -4,6 +4,7 @@ import SocketCommunicator from "../../services/communicators/SocketCommunicator"
 import EntityService from "../../services/EntityService";
 import LeaderboardService from "../../services/LeaderboardService";
 import LevelPickerService from "../../services/LevelPickerService";
+import PlayerDistanceService from "../../services/PlayerDistanceServer";
 import Game from "../Game";
 import GameManagerBuilder from "../GameManagerBuilder";
 
@@ -26,6 +27,7 @@ export class GameFacade {
     gameManagerBuilder.addAutoService(new LevelPickerService());
     gameManagerBuilder.addAutoService(new EntityService());
     gameManagerBuilder.addAutoService(new LeaderboardService());
+    gameManagerBuilder.addAutoService(new PlayerDistanceService());
 
     const gameManager = gameManagerBuilder.build();
     const game = gameManager.getService(Game);
