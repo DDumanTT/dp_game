@@ -18,5 +18,6 @@ module.exports = {
         "@typescript-eslint"
     ],
     "rules": {
+        "brace-style": ["error","1tbs"]
     }
 }
