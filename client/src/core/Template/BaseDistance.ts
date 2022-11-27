@@ -20,7 +20,6 @@ export abstract class BaseDistance {
 
   public templateMethod() {
     this.ExtractRequiredData();
-    console.log(this._convertedPlayers);
     // Replaceable method
     this.Sort();
   }

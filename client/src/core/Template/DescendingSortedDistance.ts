@@ -1,7 +1,6 @@
 import IDistanceUser from "../interfaces/IDistanceUser";
 import { BaseDistance } from "./BaseDistance";
 
-
 export class DescendingSortedDistances extends BaseDistance{
     protected Sort(): void {
         // access base converted users
