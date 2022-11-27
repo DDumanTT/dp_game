@@ -7,6 +7,8 @@ import MainPlayer from '../components/MainPlayer';
 import LeaderBoardAdapter from "../core/adapter/LeaderBoardAdapter";
 import Entities from "../core/adapter/Entities";
 import { DistanceHelper } from "../assets/Distance";
+import { AscendingSortedDistances } from './../core/Template/AscendingSortedDistance';
+import { DescendingSortedDistances } from './../core/Template/DescendingSortedDistance';
 
 export default class PlayerDistanceService implements IAutoService {
   private _distanceContent = "";
@@ -15,7 +17,7 @@ export default class PlayerDistanceService implements IAutoService {
     // console.log(`Leaderboard content should be: ${content}`);
     setInterval(() => {
       this.update();
-    }, 1000 / 5); // refreshes 5 times per second
+    }, 1000 / 10); // refreshes 5 times per second
   }
 
   private _gameManager: IGameManager = null!;
@@ -28,27 +30,24 @@ export default class PlayerDistanceService implements IAutoService {
     if (this._gameManager == null) {
       return;
     }
-    var entityService = this._gameManager.getService(EntityService);
 
-    var entities = new Entities(entityService.entities);
+    const entityService = this._gameManager.getService(EntityService);
 
-    const mainPlayer: MainPlayer = entityService.mainPlayer!!;
+    const entities = new Entities(entityService.entities);
 
-    var users: Array<IDistanceUser> = entities.entities().map(x => {
-      return {
-        username: x.name,
-        distance: 22
-      } as IDistanceUser
-    });
+    const mainPlayer: MainPlayer = entityService.mainPlayer!;
 
-    users = users.filter(x => x.username !== mainPlayer.name);
+    // const descDistances = new DescendingSortedDistances(mainPlayer, entities.entities());
+    
+    const ascDistances = new AscendingSortedDistances(mainPlayer, entities.entities());
+    ascDistances.templateMethod();
+    
+    const users = ascDistances.GetConvertedPlayers();
 
-    // users.sort((a: IDistanceUser, b: IDistanceUser) => b.score - a.score);
-
-    var content = new DistanceHelper().createPredefinedContent(users);
+    const content = new DistanceHelper().createPredefinedContent(users);
     this._distanceContent = content;
 
-    var distanceElement = document.getElementById(
+    const distanceElement = document.getElementById(
       "distance-players"
     ) as HTMLInputElement;
 
