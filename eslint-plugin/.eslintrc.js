@@ -5,7 +5,6 @@ module.exports = {
     },
     "extends": [
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
     ],
     "overrides": [
     ],
@@ -15,11 +14,7 @@ module.exports = {
         "sourceType": "module"
     },
     "plugins": [
-        "@typescript-eslint",
-        "@dp_game"
     ],
     "rules": {
-        "brace-style": ["error", "1tbs"],
-        "@dp_game/class-name-capitalized": "error"
     }
 }
