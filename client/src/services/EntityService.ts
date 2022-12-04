@@ -9,7 +9,6 @@ import IGameManager from "../core/interfaces/IGameManager";
 import IPickup from "../core/interfaces/IPickup";
 import Game from "../core/Game";
 import LevelPickerService from "./LevelPickerService";
-import PickupType from "@shared/constants/PickupType";
 import { IPickupFactory } from "./../core/Factories/AbstractFactory";
 import PickupList from "../core/iterators/PickupList";
 
@@ -130,28 +129,34 @@ export default class EntityService implements IAutoService {
 
   private pickupSwitch(pickup: SocketPickup, factory: IPickupFactory) {
     let newPickup: IPickup;
-    switch (pickup.type) {
-      case PickupType.Grow:
-        newPickup = factory.createGrowPickup(
-          pickup.id,
-          new Position(pickup.position.x, pickup.position.y)
-        );
-        break;
-      case PickupType.Speed:
-        newPickup = factory.createSpeedPickup(
-          pickup.id,
-          new Position(pickup.position.x, pickup.position.y)
-        );
-        break;
-      case PickupType.Reverse:
-        newPickup = factory.createReversePickup(
-          pickup.id,
-          new Position(pickup.position.x, pickup.position.y)
-        );
-        break;
-      default:
-        throw new Error("Invalid pickup type.");
-    }
+    newPickup = factory.createPickup(
+      pickup.id,
+      new Position(pickup.position.x, pickup.position.y),
+      pickup.type,
+      )
+    // switch (pickup.type) {
+    //   case PickupType.Grow:
+    //     newPickup = factory.createGrowPickup(
+    //       pickup.id,
+    //       new Position(pickup.position.x, pickup.position.y)
+    //     );
+    //     break;
+    //   case PickupType.Speed:
+    //     newPickup = factory.createSpeedPickup(
+    //       pickup.id,
+    //       new Position(pickup.position.x, pickup.position.y)
+    //     );
+    //     break;
+    //   case PickupType.Reverse:
+    //     newPickup = factory.createReversePickup(
+    //       pickup.id,
+    //       new Position(pickup.position.x, pickup.position.y)
+    //     );
+    //     break;
+    //   default:
+    //     throw new Error("Invalid pickup type.");
+    // }
+
     return newPickup;
   }
 
@@ -181,5 +186,6 @@ export default class EntityService implements IAutoService {
 
   execute(gameManager: IGameManager): void {
     this._gameManager = gameManager;
+
   }
 }

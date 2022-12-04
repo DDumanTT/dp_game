@@ -6,9 +6,11 @@ import EntityService from "./EntityService";
 
 import LeaderBoardAdapter from "../core/adapter/LeaderBoardAdapter";
 import Entities from "../core/adapter/Entities";
+import { LeaderBoardState } from "../core/state/LeaderBoardState";
 
 export default class LeaderboardService implements IAutoService {
   private _leaderboardContent = "";
+  private _leaderboardState = new LeaderBoardState();
 
   constructor() {
     // console.log(`Leaderboard content should be: ${content}`);
@@ -37,12 +39,13 @@ export default class LeaderboardService implements IAutoService {
     users.sort((a: ILeaderboardUser, b: ILeaderboardUser) => b.score - a.score);
     users = users.slice(0, 10);
 
-    var content = LeaderBoardStyle(users);
-    this._leaderboardContent = content;
+    this._leaderboardContent = this._leaderboardState.getLeaderboardStyle(users);
     var leaderboardElement = document.getElementById(
       "leaderboard"
     ) as HTMLInputElement;
 
-    leaderboardElement.innerHTML = content;
+    leaderboardElement.innerHTML = this._leaderboardContent;
   }
 }
+
+

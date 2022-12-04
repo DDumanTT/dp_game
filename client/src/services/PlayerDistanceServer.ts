@@ -16,6 +16,9 @@ export default class PlayerDistanceService implements IAutoService {
   constructor() {
     // console.log(`Leaderboard content should be: ${content}`);
     setInterval(() => {
+      if(this._gameManager.getService(EntityService).mainPlayer === undefined){
+        return;
+      }
       this.update();
     }, 1000 / 10); // refreshes 5 times per second
   }

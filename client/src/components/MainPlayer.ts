@@ -1,5 +1,5 @@
 import config from "@shared/config";
-import { Graphics } from "pixi.js";
+import * as PIXI from "pixi.js";
 import IEntity from "../core/interfaces/IEntity";
 import IGameManager from "../core/interfaces/IGameManager";
 import IMovementStrategy from "../core/interfaces/IMovementStrategy";
@@ -14,9 +14,11 @@ import ConsumeCommand from "../core/commands/ConsumeCommand";
 import ICommand from "../core/interfaces/ICommand";
 import MoveMainCommand from "../core/commands/MoveMainCommand";
 import IObserver from "../core/interfaces/IObserver";
+import MassBlob from "../core/composites/MassBlob";
 
-export default class MainPlayer implements IEntity, IObserver<number> {
+export default class MainPlayer implements IEntity, IObserver<number>, IComposite {
   private _mousePosition: Position = new Position(0, 0);
+  private _mouseAngle: number = 0;
   private _speed: number = 5;
   private _player: IEntity;
 
@@ -25,6 +27,19 @@ export default class MainPlayer implements IEntity, IObserver<number> {
 
   constructor(player: IEntity) {
     this._player = player;
+
+    this.gameManager.app.renderer.plugins.interaction.on('mousedown', (e: PIXI.InteractionEvent) => {
+      const levelPicker = this.gameManager.getService(LevelPickerService);
+      const obj = new PIXI.Graphics();
+      obj.beginFill(this.color);
+      obj.drawCircle(0, 0, 50);
+      obj.width = 5 * 2;
+      obj.height = 5 * 2;
+      obj.zIndex = 10;
+      levelPicker.level.container.addChild(obj);
+      obj.position.set(this.graphics.x, this.graphics.y);
+      this.add(new MassBlob(this, this.id, obj))
+    })
   }
   get color(): number {
     return this._player.color;
@@ -47,7 +62,7 @@ export default class MainPlayer implements IEntity, IObserver<number> {
   get id(): string {
     return this._player.id;
   }
-  get graphics(): Graphics {
+  get graphics(): PIXI.Graphics {
     return this._player.graphics;
   }
   get size(): number {
@@ -63,6 +78,25 @@ export default class MainPlayer implements IEntity, IObserver<number> {
   }
   public setMovementStrategy(strategy: IMovementStrategy) {
     this._movementStrategy = strategy;
+  }
+
+  // Composite
+  private _children: IComposite[] = [];
+
+  public add(child: IComposite) {
+    this._children.push(child)
+  }
+
+  public remove(child: IComposite) {
+    this._children = this._children.filter(c => c !== child);
+  }
+
+  public action(delta: number) {
+    this._children.forEach(c => c.action(delta, this._mouseAngle));
+  }
+
+  public updateChildren(delta: number) {
+    this.action(delta);
   }
 
   private followMouse(delta: number) {
@@ -169,5 +203,6 @@ export default class MainPlayer implements IEntity, IObserver<number> {
     levelPicker.follow(this.graphics.position, this._player.gameManager.app);
     this.checkCollisionWithPickups();
     this.checkCollisionWithPlayers();
+    this.updateChildren(delta);
   }
 }
