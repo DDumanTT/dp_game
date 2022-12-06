@@ -10,7 +10,7 @@ import { LeaderBoardState } from "../core/state/LeaderBoardState";
 
 export default class LeaderboardService implements IAutoService {
   private _leaderboardContent = "";
-  private _leaderboardState = new LeaderBoardState();
+  private _leaderboardState = new LeaderBoardState(); //state
 
   constructor() {
     // console.log(`Leaderboard content should be: ${content}`);
@@ -39,7 +39,7 @@ export default class LeaderboardService implements IAutoService {
     users.sort((a: ILeaderboardUser, b: ILeaderboardUser) => b.score - a.score);
     users = users.slice(0, 10);
 
-    this._leaderboardContent = this._leaderboardState.getLeaderboardStyle(users);
+    this._leaderboardContent = this._leaderboardState.getLeaderboardStyle(users);//state
     var leaderboardElement = document.getElementById(
       "leaderboard"
     ) as HTMLInputElement;

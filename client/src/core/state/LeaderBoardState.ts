@@ -56,14 +56,16 @@ export class LeaderBoardState {
   }
 
   buildLeaderBoard() {
+    // Checks state
     switch (this._state) {
       case State.CHANGED:
         // TODO create different state
-        this.setStateStable();
-        this._leaderboardContent = LeaderBoardStyle(this._players)
+        this.setStateStable(); // updated state to stable
+        this._leaderboardContent = LeaderBoardStyle(this._players);
         console.log("Updating content..");
-        return LeaderBoardStyle(this._players);
+        return this._leaderboardContent;
       default:
+        // if stable, returns old rendered div
         return this._leaderboardContent;
     }
   }
