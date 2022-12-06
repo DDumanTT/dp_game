@@ -10,7 +10,7 @@ import { LeaderBoardState } from "../core/state/LeaderBoardState";
 
 export default class LeaderboardService implements IAutoService {
   private _leaderboardContent = "";
-  private _leaderboardState = new LeaderBoardState();
+  private _leaderboardState = new LeaderBoardState(); //state
 
   constructor() {
     // console.log(`Leaderboard content should be: ${content}`);
@@ -29,19 +29,19 @@ export default class LeaderboardService implements IAutoService {
     if (this._gameManager == null) {
       return;
     }
-    var entityService = this._gameManager.getService(EntityService);
+    const entityService = this._gameManager.getService(EntityService);
 
     // pass entities to adapter
-    var entities = new Entities(entityService.entities);
-    var adapter = new LeaderBoardAdapter(entities.entities());
-    var users = adapter.players();
+    const entities = new Entities(entityService.entities);
+    const adapter = new LeaderBoardAdapter(entities.entities());
+    let users = adapter.players();
 
     users.sort((a: ILeaderboardUser, b: ILeaderboardUser) => b.score - a.score);
     users = users.slice(0, 10);
 
     this._leaderboardContent =
-      this._leaderboardState.getLeaderboardStyle(users);
-    var leaderboardElement = document.getElementById(
+      this._leaderboardState.getLeaderboardStyle(users); //state
+    const leaderboardElement = document.getElementById(
       "leaderboard"
     ) as HTMLInputElement;
 
