@@ -39,7 +39,8 @@ export default class LeaderboardService implements IAutoService {
     users.sort((a: ILeaderboardUser, b: ILeaderboardUser) => b.score - a.score);
     users = users.slice(0, 10);
 
-    this._leaderboardContent = this._leaderboardState.getLeaderboardStyle(users);
+    this._leaderboardContent =
+      this._leaderboardState.getLeaderboardStyle(users);
     var leaderboardElement = document.getElementById(
       "leaderboard"
     ) as HTMLInputElement;
@@ -47,5 +48,3 @@ export default class LeaderboardService implements IAutoService {
     leaderboardElement.innerHTML = this._leaderboardContent;
   }
 }
-
-

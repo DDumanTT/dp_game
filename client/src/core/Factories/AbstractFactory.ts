@@ -43,6 +43,7 @@ export class CirclePickupFactory extends PickupFactory {
 
     if(!key){
       key = new PickupTypeKey(type);
+      
       this.PickupTypes.push(key);
     }
 

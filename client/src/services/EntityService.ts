@@ -132,8 +132,8 @@ export default class EntityService implements IAutoService {
     newPickup = factory.createPickup(
       pickup.id,
       new Position(pickup.position.x, pickup.position.y),
-      pickup.type,
-      )
+      pickup.type
+    );
     // switch (pickup.type) {
     //   case PickupType.Grow:
     //     newPickup = factory.createGrowPickup(
@@ -162,11 +162,12 @@ export default class EntityService implements IAutoService {
 
   public spawnPickups(pickups: PickupList) {
     const levelPicker = this._gameManager.getService(LevelPickerService);
+
     const factory = levelPicker.level.pickupFactory;
 
     const enumerator = pickups.getEnumerator();
 
-    while(enumerator.moveNext()) {
+    while (enumerator.moveNext()) {
       this._pickups.push(this.pickupSwitch(enumerator.current!, factory));
     }
   }
@@ -186,6 +187,5 @@ export default class EntityService implements IAutoService {
 
   execute(gameManager: IGameManager): void {
     this._gameManager = gameManager;
-
   }
 }
