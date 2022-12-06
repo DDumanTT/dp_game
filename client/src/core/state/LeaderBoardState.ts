@@ -11,7 +11,7 @@ export const State = {
 };
 
 export class LeaderBoardState {
-  private _state: string = "";
+  private _state = "";
   private _players: Array<ILeaderboardUser> = [];
   private _leaderboardContent = '' as string;
 
