@@ -5,6 +5,7 @@ import EntityService from "../../services/EntityService";
 import LeaderboardService from "../../services/LeaderboardService";
 import LevelPickerService from "../../services/LevelPickerService";
 import PlayerDistanceService from "../../services/PlayerDistanceServer";
+import EventService from "../../services/EventService";
 import Game from "../Game";
 import GameManagerBuilder from "../GameManagerBuilder";
 
@@ -26,6 +27,7 @@ export class GameFacade {
     gameManagerBuilder.addService(Game);
     gameManagerBuilder.addAutoService(new LevelPickerService());
     gameManagerBuilder.addAutoService(new EntityService());
+    gameManagerBuilder.addAutoService(new EventService());
     gameManagerBuilder.addAutoService(new LeaderboardService());
     gameManagerBuilder.addAutoService(new PlayerDistanceService());
 

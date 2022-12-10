@@ -1,3 +1,5 @@
+import { connect } from "socket.io-client";
+
 interface Filter {
   formatName(name: string): string | null;
 }
@@ -26,16 +28,19 @@ export class NamesProxy implements Filter {
   }
 
   public formatName(name: string): string | null {
+    console.log("start");
     if (this.nameIsValid(name)) {
+      console.log("good");
       return this.nameFilter.formatName(name);
     } else {
+      console.log("bad");
       alert(`Username ${name} is invalid`);
       return null;
     }
   }
 
   private nameIsValid(name: string): boolean {
-    const invalidNames = ["nigger", "nagger", "cunt", "faggot", "idiot"];
+    const invalidNames = ["nigger", "nagger", "cunt", "faggot", "idiot", "nigga"];
     // Some real checks should go here.
     if (invalidNames.includes(name)) {
       return false;

@@ -12,7 +12,6 @@ document.getElementById("play")?.addEventListener("click", () => {
 
     return;
   }
-
   const customProxy = new NamesProxy(new NameFilter());
   const newName = customProxy.formatName(name);
 
