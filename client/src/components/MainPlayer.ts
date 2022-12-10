@@ -14,12 +14,16 @@ import ConsumeCommand from "../core/commands/ConsumeCommand";
 import ICommand from "../core/interfaces/ICommand";
 import MoveMainCommand from "../core/commands/MoveMainCommand";
 import IObserver from "../core/interfaces/IObserver";
-import MassBlob from "../core/composites/MassBlob";
+import MassBlob, { BlobGraphics } from "../core/composites/MassBlob";
+import IComposite from "../core/composites/IComposite";
 
-export default class MainPlayer implements IEntity, IObserver<number>, IComposite {
+export default class MainPlayer
+  implements IEntity, IObserver<number>, IComposite
+{
   private _mousePosition: Position = new Position(0, 0);
-  private _mouseAngle: number = 0;
-  private _speed: number = 5;
+  private _mouseAngle = 0;
+  private _mouseDistance = 0;
+  private _speed = 5;
   private _player: IEntity;
 
   public _consumeCommand: ICommand = new ConsumeCommand(this);
@@ -28,18 +32,16 @@ export default class MainPlayer implements IEntity, IObserver<number>, IComposit
   constructor(player: IEntity) {
     this._player = player;
 
-    this.gameManager.app.renderer.plugins.interaction.on('mousedown', (e: PIXI.InteractionEvent) => {
+    this.gameManager.app.renderer.plugins.interaction.on("mousedown", () => {
       const levelPicker = this.gameManager.getService(LevelPickerService);
-      const obj = new PIXI.Graphics();
-      obj.beginFill(this.color);
-      obj.drawCircle(0, 0, 50);
-      obj.width = 5 * 2;
-      obj.height = 5 * 2;
-      obj.zIndex = 10;
+      const obj = BlobGraphics(this.color, this.size / 2);
       levelPicker.level.container.addChild(obj);
       obj.position.set(this.graphics.x, this.graphics.y);
-      this.add(new MassBlob(this, this.id, obj))
-    })
+      this.add(
+        new MassBlob(this, this.id, obj, this._mouseAngle, this._mouseDistance)
+      );
+      this.size -= this.size / 100;
+    });
   }
   get color(): number {
     return this._player.color;
@@ -53,6 +55,9 @@ export default class MainPlayer implements IEntity, IObserver<number>, IComposit
   set size(value: number) {
     this._player.size = value;
   }
+  get size(): number {
+    return this._player.size;
+  }
   get gameManager(): IGameManager {
     return this._player.gameManager;
   }
@@ -65,9 +70,7 @@ export default class MainPlayer implements IEntity, IObserver<number>, IComposit
   get graphics(): PIXI.Graphics {
     return this._player.graphics;
   }
-  get size(): number {
-    return this._player.size;
-  }
+
   destroy(): void {
     this._player.destroy();
   }
@@ -84,15 +87,15 @@ export default class MainPlayer implements IEntity, IObserver<number>, IComposit
   private _children: IComposite[] = [];
 
   public add(child: IComposite) {
-    this._children.push(child)
+    this._children.push(child);
   }
 
   public remove(child: IComposite) {
-    this._children = this._children.filter(c => c !== child);
+    this._children = this._children.filter((c) => c !== child);
   }
 
   public action(delta: number) {
-    this._children.forEach(c => c.action(delta, this._mouseAngle));
+    this._children.forEach((c) => c.action(delta));
   }
 
   public updateChildren(delta: number) {
@@ -107,15 +110,18 @@ export default class MainPlayer implements IEntity, IObserver<number>, IComposit
     let distance = Math.sqrt(
       (mouseX - playerPosOnScreen.x) ** 2 + (mouseY - playerPosOnScreen.y) ** 2
     );
-    let angle = Math.atan2(
+    const angle = Math.atan2(
       mouseY - playerPosOnScreen.y,
       mouseX - playerPosOnScreen.x
     );
 
+    this._mouseAngle = angle;
+    this._mouseDistance = distance.clamp(0, 300) / 300 + this._speed;
+
     distance = (distance.clamp(0, 300) / 300) * delta * this._speed;
 
-    let x = distance * Math.cos(angle);
-    let y = distance * Math.sin(angle);
+    const x = distance * Math.cos(angle);
+    const y = distance * Math.sin(angle);
 
     // Keeps player moving when mouse is off-screen
     this._mousePosition.set(x, y);
@@ -170,7 +176,7 @@ export default class MainPlayer implements IEntity, IObserver<number>, IComposit
         Math.sqrt((x - pX) ** 2 + (y - pY) ** 2) < this._player.size &&
         p.id >= 0
       ) {
-        var bridge: PickUpBridge = new PickUpBridge(p);
+        const bridge = new PickUpBridge(p);
         bridge.activate(this);
         bridge.destroy();
         // Commented cuz using bridge...

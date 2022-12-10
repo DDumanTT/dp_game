@@ -19,7 +19,6 @@ module.exports = {
         "@dp_game"
     ],
     "rules": {
-        "brace-style": ["error", "1tbs"],
         "@dp_game/class-name-capitalized": "error"
     }
 }
