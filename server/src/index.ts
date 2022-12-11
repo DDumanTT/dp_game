@@ -67,6 +67,11 @@ io.on("connection", (socket) => {
     SOCKET_REMOVE_PLAYER,
     playerService.removePlayerById.bind(playerService)
   );
+
+  // benchmark
+  socket.on("client to server event", () =>
+    socket.emit("server to client event")
+  );
 });
 
 // emits all players positions

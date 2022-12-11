@@ -16,6 +16,7 @@ import MoveMainCommand from "../core/commands/MoveMainCommand";
 import IObserver from "../core/interfaces/IObserver";
 import MassBlob, { BlobGraphics } from "../core/composites/MassBlob";
 import IComposite from "../core/composites/IComposite";
+import EventService from "../services/EventService";
 
 export default class MainPlayer
   implements IEntity, IObserver<number>, IComposite
@@ -103,9 +104,12 @@ export default class MainPlayer
   }
 
   private followMouse(delta: number) {
+    const eventService = this._player.gameManager.getService(EventService);
+
     const playerPosOnScreen = this.graphics.getGlobalPosition();
-    const { x: mouseX, y: mouseY } =
-      this._player.gameManager.app.renderer.plugins.interaction.mouse.global;
+    const pos = eventService.handle("mouse") as PIXI.Point;
+    if (!pos) return;
+    const { x: mouseX, y: mouseY } = pos;
 
     let distance = Math.sqrt(
       (mouseX - playerPosOnScreen.x) ** 2 + (mouseY - playerPosOnScreen.y) ** 2

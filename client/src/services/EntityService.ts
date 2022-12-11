@@ -128,8 +128,7 @@ export default class EntityService implements IAutoService {
   }
 
   private pickupSwitch(pickup: SocketPickup, factory: IPickupFactory) {
-    let newPickup: IPickup;
-    newPickup = factory.createPickup(
+    const newPickup = factory.createPickup(
       pickup.id,
       new Position(pickup.position.x, pickup.position.y),
       pickup.type
@@ -168,7 +167,8 @@ export default class EntityService implements IAutoService {
     const enumerator = pickups.getEnumerator();
 
     while (enumerator.moveNext()) {
-      this._pickups.push(this.pickupSwitch(enumerator.current!, factory));
+      const pickup = enumerator.current;
+      if (pickup) this._pickups.push(this.pickupSwitch(pickup, factory));
     }
   }
 

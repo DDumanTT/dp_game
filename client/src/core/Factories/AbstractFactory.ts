@@ -24,43 +24,60 @@ abstract class PickupFactory implements IPickupFactory {
     this._gameManager = gameManager;
   }
 
-  abstract createPickup(id: number, spawnPosition: Position, type: PickupType): IPickup;
+  abstract createPickup(
+    id: number,
+    spawnPosition: Position,
+    type: PickupType
+  ): IPickup;
   // abstract createGrowPickup(id: number, spawnPosition: Position): IPickup;
   // abstract createSpeedPickup(id: number, spawnPosition: Position): IPickup;
   // abstract createReversePickup(id: number, spawnPosition: Position): IPickup;
 }
 
 export class CirclePickupFactory extends PickupFactory {
-
-  private PickupTypes: PickupTypeKey[] = []
+  private PickupTypes: PickupTypeKey[] = [];
 
   lineStyle: ILineStyleOptions = { width: 5, color: 0xffffff };
 
-
   createPickup(id: number, spawnPosition: Position, type: PickupType): IPickup {
+    let key = this.PickupTypes.find((t) => t.type === type);
 
-    let key = this.PickupTypes.find(t => t.type === type);
-
-    if(!key){
+    if (!key) {
       key = new PickupTypeKey(type);
-      
+
       this.PickupTypes.push(key);
     }
 
-   
-
-    switch(key?.type) {
-      case  PickupType.Grow:
-        return new GrowPickup(id, spawnPosition, this.draw(spawnPosition, undefined), this._gameManager, key);
+    console.log(key.type);
+    switch (key?.type) {
+      case PickupType.Grow:
+        return new GrowPickup(
+          id,
+          spawnPosition,
+          this.draw(spawnPosition, undefined),
+          this._gameManager,
+          key
+        );
       case PickupType.Speed:
-        return new SpeedPickup(id, spawnPosition, this.draw(spawnPosition, this.lineStyle), this._gameManager, key);
-      case PickupType.Reverse: 
-        return new ReversePickup(id, spawnPosition, this.draw(spawnPosition, this.lineStyle), this._gameManager, key);
+        return new SpeedPickup(
+          id,
+          spawnPosition,
+          this.draw(spawnPosition, this.lineStyle),
+          this._gameManager,
+          key
+        );
+      case PickupType.Reverse:
+        return new ReversePickup(
+          id,
+          spawnPosition,
+          this.draw(spawnPosition, this.lineStyle),
+          this._gameManager,
+          key
+        );
     }
 
-    throw new Error('Invalid pickup type')
+    throw new Error("Invalid pickup type");
   }
-
 
   // createSpeedPickup(id: number, spawnPosition: Position): IPickup {
   //   const lineStyle: ILineStyleOptions = { width: 5, color: 0xffffff };
@@ -81,8 +98,6 @@ export class CirclePickupFactory extends PickupFactory {
   //     this._gameManager
   //   );
   // }
-
-
 
   private draw(position: Position, lineStyle: ILineStyleOptions | undefined) {
     const obj = new Graphics();

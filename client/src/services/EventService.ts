@@ -4,6 +4,7 @@ import MouseEventHandler from "../events/MouseEventHandler";
 import TapEventHandler from "../events/TapEventHandler";
 import KeyboardEventHandler from "../events/KeyboardEventHandler";
 import IEventHandler from "../events/IEventHandler";
+import EntityService from "./EntityService";
 
 export default class EventService implements IAutoService {
   private _gameManager: IGameManager = null!;
@@ -14,11 +15,13 @@ export default class EventService implements IAutoService {
   }
 
   private setupChain() {
-    const mouseHandler = new MouseEventHandler();
-    const tapHandler = new TapEventHandler();
-    const keyboardHandler = new KeyboardEventHandler();
+    const mouseHandler = new MouseEventHandler(this._gameManager);
+    const tapHandler = new TapEventHandler(this._gameManager);
+    const keyboardHandler = new KeyboardEventHandler(this._gameManager);
 
-    this._handler = mouseHandler.setNextHandler(tapHandler).setNextHandler(keyboardHandler);
+    mouseHandler.setNextHandler(tapHandler).setNextHandler(keyboardHandler);
+
+    this._handler = mouseHandler;
   }
 
   public handle(event: string) {
