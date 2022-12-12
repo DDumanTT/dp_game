@@ -7,10 +7,14 @@ import EntityService from "./EntityService";
 import LeaderBoardAdapter from "../core/adapter/LeaderBoardAdapter";
 import Entities from "../core/adapter/Entities";
 import { LeaderBoardState } from "../core/state/LeaderBoardState";
+import { Caretaker } from "../core/momento/CareTaker";
+import { Originator } from "../core/momento/Originator";
 
 export default class LeaderboardService implements IAutoService {
   private _leaderboardContent = "";
   private _leaderboardState = new LeaderBoardState(); //state
+  private _originator = new Originator({username: 'test', score: -1})
+  private _cateTaker: Caretaker = new Caretaker(this._originator);
 
   constructor() {
     // console.log(`Leaderboard content should be: ${content}`);
@@ -38,6 +42,26 @@ export default class LeaderboardService implements IAutoService {
 
     users.sort((a: ILeaderboardUser, b: ILeaderboardUser) => b.score - a.score);
     users = users.slice(0, 10);
+
+
+    const mainPlayer = entityService.mainPlayer;
+
+
+    // TODO use caretaker
+    if(mainPlayer == undefined || mainPlayer?.size > 52){
+      mainPlayer?.destroy();
+    }
+
+    // TODO implement logics
+    // this._originator.addTopPlayer();
+
+    // const mainPlayer_2 = entityService.mainPlayer;
+
+    // if (mainPlayer_2 === null) { // TODO on deleted check if user 
+    //   console.log("User is dead");
+    // }
+
+
 
     this._leaderboardContent =
       this._leaderboardState.getLeaderboardStyle(users); //state
