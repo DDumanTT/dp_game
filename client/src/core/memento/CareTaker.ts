@@ -1,6 +1,6 @@
+import { isThisTypeNode } from "typescript";
 import { Memento } from "./IMomento";
 import { Originator } from "./Originator";
-import ILeaderboardUser from './../interfaces/ILeaderboardUser';
 
  export class Caretaker {
     private mementos: Memento[] = [];
@@ -12,9 +12,9 @@ import ILeaderboardUser from './../interfaces/ILeaderboardUser';
     }
 
     public backup(): void {
-        console.log('\nCaretaker: Saving Originator\'s state...');
+        // console.log('\nCaretaker: Saving Originator\'s state...');
         const momento = this.originator.save();
-        console.log(momento)
+        // console.log(momento)
         this.mementos.push(momento);
     }
 
@@ -27,14 +27,13 @@ import ILeaderboardUser from './../interfaces/ILeaderboardUser';
         if(memento === undefined){
             throw Error("Momento is undefined");
         }
-        console.log(`Caretaker: Restoring state to: ${memento.getName()}`);
+        // console.log(`Caretaker: Restoring state to: ${memento.getName()}`);
         this.originator.restore(memento);
     }
 
     public showHistory(): void {
-        console.log('Caretaker: Here\'s the list of mementos:');
+        // console.log('Caretaker: Here\'s the list of mementos:');
         for (const memento of this.mementos) {
-
             console.log(memento.getName());
         }
     }
@@ -48,4 +47,12 @@ import ILeaderboardUser from './../interfaces/ILeaderboardUser';
             return x.getName();
         })
     }
+
+    // public revertAllList():void {
+    //     for (const memento of this.mementos){
+    //         this.originator.restore(memento);
+    //         this.originator.addTopPlayer({username:"custom", score: 20});
+    //         this.backup();
+    //     }
+    // }
 }

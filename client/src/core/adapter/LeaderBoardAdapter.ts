@@ -43,7 +43,7 @@ export default class LeaderBoardAdapter implements ILeaderBoard {
   }
 
   players(): Array<ILeaderboardUser> {
-    var users: Array<ILeaderboardUser> = this._entities.map((x) => {
+    const users: Array<ILeaderboardUser> = this._entities.map((x) => {
       // return { username: "dasd", score: x.size };
       if (x instanceof Player) {
         return { username: (x as Player).name, score: x.size };

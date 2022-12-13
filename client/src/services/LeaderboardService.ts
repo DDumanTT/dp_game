@@ -65,7 +65,12 @@ export default class LeaderboardService implements IAutoService {
         this._topPlayer.username === tempTopPlayer.username &&
         this._topPlayer.score != tempTopPlayer.score
       ) {
-        this._originator.addTopPlayer(tempTopPlayer);
+        // this._originator.addTopPlayer(tempTopPlayer);
+        // this._topPlayer = tempTopPlayer;
+        // this._originator.addTopPlayer(tempTopPlayer);
+        this._cateTaker.undo();
+        this._originator.updateScore(tempTopPlayer.score);
+        this._cateTaker.backup();
         this._topPlayer = tempTopPlayer;
         // console.log("Updating top player score... Player:");
         // console.log(this._topPlayer);
@@ -89,6 +94,7 @@ export default class LeaderboardService implements IAutoService {
         const content = TopPlayersHistory(tempUsers);
         topPlayersDiv.innerHTML = content;
         topPlayersDiv.style.backgroundColor = "aliceblue";
+        // this._cateTaker.revertAllList();
       }
     }
 

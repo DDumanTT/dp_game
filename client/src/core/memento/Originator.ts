@@ -18,6 +18,10 @@ import { TopPlayerMemento } from "./TopPlayerMemento";
         return new TopPlayerMemento(this.state);
     }
 
+    public updateScore(score:number){
+        this.state.score = score;
+    }
+
     public restore(memento: Memento): void {
         this.state = memento.getState();
     }
