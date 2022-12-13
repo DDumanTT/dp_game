@@ -2,11 +2,6 @@ import { Memento } from "./IMomento";
 import { Originator } from "./Originator";
 import ILeaderboardUser from './../interfaces/ILeaderboardUser';
 
-/**
- * The Caretaker doesn't depend on the Concrete Memento class. Therefore, it
- * doesn't have access to the originator's state, stored inside the memento. It
- * works with all mementos via the base Memento interface.
- */
  export class Caretaker {
     private mementos: Memento[] = [];
 
