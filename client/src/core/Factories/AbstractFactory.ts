@@ -48,7 +48,7 @@ export class CirclePickupFactory extends PickupFactory {
       this.PickupTypes.push(key);
     }
 
-    console.log(key.type);
+    // console.log(key.type);
     switch (key?.type) {
       case PickupType.Grow:
         return new GrowPickup(

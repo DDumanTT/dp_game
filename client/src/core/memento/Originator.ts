@@ -16,7 +16,7 @@ import { TopPlayerMemento } from "./TopPlayerMemento";
 
     constructor(state: ILeaderboardUser) {
         this.state = state;
-        console.log(`Originator: My initial state is: ${state}`);
+        // console.log(`Originator: My initial state is: ${state}`);
     }
 
     /**
@@ -25,9 +25,9 @@ import { TopPlayerMemento } from "./TopPlayerMemento";
      * business logic via the save() method.
      */
     public addTopPlayer(topPlayer: ILeaderboardUser): void {
-        console.log('Originator: I\'m doing something important.');
+        // console.log('Originator: I\'m doing something important.');
         this.state = topPlayer;
-        console.log(`Originator: and my state has changed to: ${this.state}`);
+        // console.log(`Originator: and my state has changed to: ${this.state}`);
     }
 
     /**
@@ -42,6 +42,6 @@ import { TopPlayerMemento } from "./TopPlayerMemento";
      */
     public restore(memento: Memento): void {
         this.state = memento.getState();
-        console.log(`Originator: My state has changed to: ${this.state}`);
+        // console.log(`Originator: My state has changed to: ${this.state}`);
     }
 }

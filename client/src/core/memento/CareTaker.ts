@@ -1,5 +1,6 @@
 import { Memento } from "./IMomento";
 import { Originator } from "./Originator";
+import ILeaderboardUser from './../interfaces/ILeaderboardUser';
 
 /**
  * The Caretaker doesn't depend on the Concrete Memento class. Therefore, it
@@ -17,7 +18,9 @@ import { Originator } from "./Originator";
 
     public backup(): void {
         console.log('\nCaretaker: Saving Originator\'s state...');
-        this.mementos.push(this.originator.save());
+        const momento = this.originator.save();
+        console.log(momento)
+        this.mementos.push(momento);
     }
 
     public undo(): void {
@@ -36,11 +39,18 @@ import { Originator } from "./Originator";
     public showHistory(): void {
         console.log('Caretaker: Here\'s the list of mementos:');
         for (const memento of this.mementos) {
+
             console.log(memento.getName());
         }
     }
 
     public hasMomentos():boolean{
         return this.mementos !== undefined && this.mementos.length > 0;
+    }
+
+    public returnList():Array<string>{
+        return this.mementos.map(x => {
+            return x.getName();
+        })
     }
 }

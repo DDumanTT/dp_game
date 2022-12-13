@@ -16,13 +16,24 @@ export default function LeaderBoardStyle(
   users: Array<ILeaderboardUser>
 ): string {
   // reikia username ir score
-  var scoresWithUsernames: string = users
+  const scoresWithUsernames: string = users
     .map((x, index) => {
       return li(`${index + 1}. ${x.username} ${x.score}`);
     })
     .join("");
 
   return `${div("Leaderboard:" + div(ul(scoresWithUsernames)))}`;
+}
+
+export function TopPlayersHistory(users: Array<string>): string {
+  // reikia username ir score
+  const scoresWithUsernames: string = users
+    .map((x) => {
+      return div(`${x}`);
+    })
+    .join("");
+
+  return `${div("GAME OVER" +div("History of Top players during your session:" + div(ul(scoresWithUsernames))))}`;
 }
 
 export class LeaderBoardHelper {

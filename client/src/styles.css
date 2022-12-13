@@ -31,9 +31,9 @@ marquee {
   height: 100%;
 }
 
-.flexbox{
+.flexbox {
   position: relative;
-  display:flex;
+  display: flex;
 }
 
 .leaderboard {
@@ -41,13 +41,23 @@ marquee {
   color: aqua;
 }
 
+.topPlayerHistory {
+  position: absolute;
+  color: red;
+  margin:0 auto;
+  left: 0;
+  right: 0;
+  width: fit-content;
+  font-size: x-large;
+  padding: 30px;
+  /* background-color: aliceblue; */
+}
+
 .distance-players {
   position: absolute;
   color: greenyellow;
-  right:0;
+  right: 0;
 }
-
-
 
 input {
   font-size: 3rem;
