@@ -11,9 +11,6 @@ import PickupTypeKey from "../../components/PickupTypeKey";
 import PickupType from "@shared/constants/PickupType";
 
 export interface IPickupFactory {
-  // createGrowPickup(id: number, spawnPosition: Position): IPickup;
-  // createSpeedPickup(id: number, spawnPosition: Position): IPickup;
-  // createReversePickup(id: number, spawnPosition: Position): IPickup;
   createPickup(id: number, spawnPosition: Position, type: PickupType): IPickup;
 }
 
@@ -29,9 +26,6 @@ abstract class PickupFactory implements IPickupFactory {
     spawnPosition: Position,
     type: PickupType
   ): IPickup;
-  // abstract createGrowPickup(id: number, spawnPosition: Position): IPickup;
-  // abstract createSpeedPickup(id: number, spawnPosition: Position): IPickup;
-  // abstract createReversePickup(id: number, spawnPosition: Position): IPickup;
 }
 
 export class CirclePickupFactory extends PickupFactory {
@@ -48,7 +42,6 @@ export class CirclePickupFactory extends PickupFactory {
       this.PickupTypes.push(key);
     }
 
-    // console.log(key.type);
     switch (key?.type) {
       case PickupType.Grow:
         return new GrowPickup(
@@ -79,26 +72,6 @@ export class CirclePickupFactory extends PickupFactory {
     throw new Error("Invalid pickup type");
   }
 
-  // createSpeedPickup(id: number, spawnPosition: Position): IPickup {
-  //   const lineStyle: ILineStyleOptions = { width: 5, color: 0xffffff };
-  //   return new SpeedPickup(
-  //     id,
-  //     spawnPosition,
-  //     this.draw(spawnPosition, lineStyle),
-  //     this._gameManager
-  //   );
-  // }
-
-  // createReversePickup(id: number, spawnPosition: Position): IPickup {
-  //   const lineStyle: ILineStyleOptions = { width: 5, color: 0xffffff };
-  //   return new ReversePickup(
-  //     id,
-  //     spawnPosition,
-  //     this.draw(spawnPosition, lineStyle),
-  //     this._gameManager
-  //   );
-  // }
-
   private draw(position: Position, lineStyle: ILineStyleOptions | undefined) {
     const obj = new Graphics();
     const color = Math.floor(Math.random() * 0xffffff);
@@ -109,6 +82,34 @@ export class CirclePickupFactory extends PickupFactory {
     return obj;
   }
 }
+
+// abstract createGrowPickup(id: number, spawnPosition: Position): IPickup;
+// abstract createSpeedPickup(id: number, spawnPosition: Position): IPickup;
+// abstract createReversePickup(id: number, spawnPosition: Position): IPickup;
+
+// createGrowPickup(id: number, spawnPosition: Position): IPickup;
+// createSpeedPickup(id: number, spawnPosition: Position): IPickup;
+// createReversePickup(id: number, spawnPosition: Position): IPickup;
+
+// createSpeedPickup(id: number, spawnPosition: Position): IPickup {
+//   const lineStyle: ILineStyleOptions = { width: 5, color: 0xffffff };
+//   return new SpeedPickup(
+//     id,
+//     spawnPosition,
+//     this.draw(spawnPosition, lineStyle),
+//     this._gameManager
+//   );
+// }
+
+// createReversePickup(id: number, spawnPosition: Position): IPickup {
+//   const lineStyle: ILineStyleOptions = { width: 5, color: 0xffffff };
+//   return new ReversePickup(
+//     id,
+//     spawnPosition,
+//     this.draw(spawnPosition, lineStyle),
+//     this._gameManager
+//   );
+// }
 
 // export class SquarePickupFactory extends PickupFactory {
 //   createGrowPickup(id: number, spawnPosition: Position): IPickup {

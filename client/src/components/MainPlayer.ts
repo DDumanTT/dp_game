@@ -17,9 +17,11 @@ import IObserver from "../core/interfaces/IObserver";
 import MassBlob, { BlobGraphics } from "../core/composites/MassBlob";
 import IComposite from "../core/composites/IComposite";
 import EventService from "../services/EventService";
+import IVisitee from "../core/visitor/IVisitee";
+import IVisitor from "../core/visitor/IVisitor";
 
 export default class MainPlayer
-  implements IEntity, IObserver<number>, IComposite
+  implements IEntity, IObserver<number>, IComposite, IVisitee
 {
   private _mousePosition: Position = new Position(0, 0);
   private _mouseAngle = 0;
@@ -29,6 +31,8 @@ export default class MainPlayer
 
   public _consumeCommand: ICommand = new ConsumeCommand(this);
   public _moveCommand: ICommand = new MoveMainCommand(this);
+
+  public spedUp = false;
 
   constructor(player: IEntity) {
     this._player = player;
@@ -44,6 +48,15 @@ export default class MainPlayer
       this.size -= this.size / 100;
     });
   }
+
+  get speed() {
+    return this._speed;
+  }
+
+  set speed(v: number) {
+    this._speed = v;
+  }
+
   get color(): number {
     return this._player.color;
   }
@@ -82,6 +95,11 @@ export default class MainPlayer
   }
   public setMovementStrategy(strategy: IMovementStrategy) {
     this._movementStrategy = strategy;
+  }
+
+  // visitor
+  accept(visitor: IVisitor): void {
+    visitor.visit(this);
   }
 
   // Composite
@@ -148,20 +166,6 @@ export default class MainPlayer
 
   public move(x: number, y: number) {
     this._moveCommand.execute(x, y);
-  }
-
-  private _spedUp = false;
-  public get isSpeed() {
-    return this._spedUp;
-  }
-
-  public speedUp(amount: number, time: number) {
-    this._spedUp = true;
-    this._speed += amount;
-    setTimeout(() => {
-      this._spedUp = false;
-      this._speed -= amount;
-    }, time);
   }
 
   public reverseMovement(time: number) {

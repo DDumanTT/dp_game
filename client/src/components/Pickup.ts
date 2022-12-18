@@ -1,6 +1,9 @@
 import config from "@shared/config";
 import BasePickup from "../core/base/BasePickup";
 import InvertedMovementStrategy from "../core/strategies/InvertedMovementStrategy";
+import GrowVisitor from "../core/visitor/GrowVisitor";
+import ReverseMovementVisitor from "../core/visitor/reverseMovementVisitor";
+import SpeedUpVisitor from "../core/visitor/SpeedUpVisitor";
 import SocketCommunicator from "../services/communicators/SocketCommunicator";
 import LevelPickerService from "../services/LevelPickerService";
 import MainPlayer from "./MainPlayer";
@@ -10,18 +13,8 @@ export class GrowPickup extends BasePickup {
     const socket = this.gameManager.getService(SocketCommunicator);
     socket.emitRemovePickup(this.id);
 
-    const levelPicker = this.gameManager.getService(LevelPickerService);
-    if (player.size < Math.min(config.world.width, config.world.height) / 25) {
-      player.size += 1;
-    }
-
-    levelPicker.level.container.scale.x =
-      1 - player.size / levelPicker.level.container.x;
-    levelPicker.level.container.scale.y =
-      1 - player.size / levelPicker.level.container.x;
-
-    if (levelPicker.level.container.scale.x < 0.05)
-      levelPicker.level.container.scale.set(0.05);
+    const grow = new GrowVisitor();
+    player.accept(grow);
 
     console.log("We getting bigger");
   }
@@ -29,10 +22,12 @@ export class GrowPickup extends BasePickup {
 
 export class SpeedPickup extends BasePickup {
   activate(player: MainPlayer) {
-    if (player.isSpeed) return;
+    if (player.spedUp) return;
     const socket = this.gameManager.getService(SocketCommunicator);
     socket.emitRemovePickup(this.id);
-    player.speedUp(2, 5000);
+
+    const speedUp = new SpeedUpVisitor();
+    player.accept(speedUp);
 
     console.log("SPEED IS KEY");
   }
@@ -43,7 +38,9 @@ export class ReversePickup extends BasePickup {
     if (player.movementStrategy instanceof InvertedMovementStrategy) return;
     const socket = this.gameManager.getService(SocketCommunicator);
     socket.emitRemovePickup(this.id);
-    player.reverseMovement(5000);
+
+    const reverseMovement = new ReverseMovementVisitor();
+    player.accept(reverseMovement);
 
     console.log("uno reverse card");
   }
